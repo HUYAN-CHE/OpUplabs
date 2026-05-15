@@ -73,6 +73,14 @@
         }
         .top-bar-left { color: var(--text-secondary); }
         .top-bar-right { display: flex; align-items: center; gap: 32px; }
+        .nav-toggle {
+            display: none; flex-direction: column; gap: 4px;
+            cursor: pointer; padding: 4px; background: none; border: none;
+        }
+        .nav-toggle span {
+            display: block; width: 18px; height: 1.5px;
+            background: var(--text); transition: all 0.3s;
+        }
         .top-bar-right a {
             color: var(--text-secondary); text-decoration: none;
             transition: color 0.3s; cursor: pointer;
@@ -379,15 +387,30 @@
             .btn { padding: 12px 20px; font-size: 10px; }
             .top-bar { padding: 12px 16px; position: relative; }
             .top-bar-left { display: none !important; }
+            .nav-toggle { display: flex; }
             .top-bar-right {
-                gap: 14px; flex-wrap: nowrap; justify-content: flex-start;
-                overflow-x: auto; white-space: nowrap;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                width: 100%; padding-bottom: 4px;
+                display: none;
+                position: absolute; top: 100%; left: 0; right: 0;
+                background: var(--surface);
+                border-bottom: 1px solid var(--line);
+                flex-direction: column;
+                padding: 8px 20px;
+                gap: 0;
+                z-index: 100;
+                width: auto;
+                overflow-x: visible;
+                white-space: normal;
             }
-            .top-bar-right::-webkit-scrollbar { display: none; }
-            .top-bar-right a { font-size: 10px; letter-spacing: 0.5px; flex-shrink: 0; }
+            .top-bar-right.open { display: flex; }
+            .top-bar-right a {
+                font-size: 13px; letter-spacing: 0.5px;
+                padding: 14px 0;
+                border-bottom: 1px solid var(--line);
+                flex-shrink: 1; color: var(--text);
+            }
+            .top-bar-right a:last-of-type { border-bottom: none; }
+            .top-bar-right .dot { display: none; }
+            .top-bar-right .lang-toggle { display: none; }
             .lang-toggle { display: none; }
             .page-section { padding: 48px 20px; }
             .page-section h2 { font-size: clamp(24px, 6vw, 30px); margin-bottom: 16px; }
@@ -418,7 +441,12 @@
         <div class="main">
             <div class="top-bar">
                 <div class="top-bar-left" id="topBarLeft">Uplabs Product Boneyard</div>
-                <div class="top-bar-right">
+                <button class="nav-toggle" id="navToggle" onclick="toggleMobileNav()" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="top-bar-right" id="topBarRight">
                     <a onclick="scrollToList()" id="navWork">Work</a>
                     <a onclick="scrollToSection('consulting')" id="navConsulting">Consulting</a>
                     <a onclick="scrollToSection('brandDesign')" id="navBrandDesign">Brand Design</a>
@@ -793,8 +821,19 @@ function resetFilter() {
     renderList();
 }
 
+function toggleMobileNav() {
+    document.getElementById('topBarRight').classList.toggle('open');
+}
+
+function closeMobileNav() {
+    if (window.innerWidth <= 767) {
+        document.getElementById('topBarRight').classList.remove('open');
+    }
+}
+
 function scrollToList() {
     document.getElementById('pluginList').scrollIntoView({ behavior: 'smooth' });
+    closeMobileNav();
 }
 
 function scrollToTop() {
@@ -804,6 +843,7 @@ function scrollToTop() {
 function scrollToSection(id) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    closeMobileNav();
 }
 
 /* Events */
