@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Boneyard — Uplabs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --surface: #242424;
+            --text: #f0eeeb;
+            --text-secondary: #a0a0a0;
+            --text-tertiary: #6b6b6b;
+            --line: #333333;
+            --accent: #f0eeeb;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; min-height: 100vh;
+        }
+        .container { display: grid; grid-template-columns: 64px 1fr; min-height: 100vh; }
+        .sidebar {
+            border-right: 1px solid var(--line); position: sticky; top: 0; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; padding: 24px 0;
+            background: var(--bg); z-index: 10;
+        }
+        .sidebar-logo {
+            writing-mode: vertical-rl; text-orientation: mixed;
+            font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 500;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: auto;
+            cursor: pointer; transition: opacity 0.3s; color: var(--text); text-decoration: none;
+        }
+        .sidebar-logo:hover { opacity: 0.5; }
+        .sidebar-bottom {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+        .sidebar-icon {
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--line); border-radius: 50%; cursor: pointer;
+            transition: all 0.3s; font-size: 11px; color: var(--text-secondary);
+            text-decoration: none;
+        }
+        .sidebar-icon:hover { border-color: var(--text); color: var(--text); }
+
+        .main { display: flex; flex-direction: column; min-height: 100vh; }
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; border-bottom: 1px solid var(--line);
+            font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .top-bar-left { color: var(--text-secondary); }
+        .top-bar-left a {
+            color: var(--text-secondary); text-decoration: none; transition: color 0.3s;
+        }
+        .top-bar-left a:hover { color: var(--text); }
+        .top-bar-right { display: flex; align-items: center; gap: 32px; }
+        .dot { width: 8px; height: 8px; background: var(--text); border-radius: 50%; }
+
+        .graveyard {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+            position: relative; padding: 60px 40px min(25vh, 220px);
+            overflow: hidden;
+        }
+        .svg-bg {
+            position: absolute; inset: 0;
+            background-image: url('svg/Buried.svg');
+            background-size: cover;
+            background-position: center top;
+            opacity: 0.08;
+            pointer-events: none; z-index: 0;
+            animation: svgFloat 30s ease-in-out infinite;
+        }
+        @keyframes svgFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.05; }
+            50% { transform: translate(-1%, -0.5%) scale(1.03); opacity: 0.10; }
+        }
+
+        /* Rain */
+        .rain {
+            position: absolute; top: -10%; left: 0; right: 0; bottom: 0;
+            pointer-events: none; z-index: 2;
+            overflow: hidden;
+            transform: skewX(-8deg);
+        }
+        .drop {
+            position: absolute;
+            top: -20%;
+            width: 1px;
+            background: linear-gradient(to bottom, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.12) 20%, 
+                rgba(255,255,255,0.08) 80%, 
+                rgba(255,255,255,0) 100%);
+            border-radius: 1px;
+            opacity: 0;
+            animation: rainFall linear infinite;
+            filter: blur(0.3px);
+        }
+        @keyframes rainFall {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            3% { opacity: 0.7; }
+            85% { opacity: 0.2; }
+            100% { transform: translateY(130vh) translateX(40px); opacity: 0; }
+        }
+
+        /* Splash */
+        .splash-layer {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 40px; pointer-events: none; z-index: 2;
+            overflow: hidden;
+        }
+        .splash-group {
+            position: absolute; bottom: 0;
+            width: 2px; height: 2px;
+            background: rgba(230,230,230,0.6);
+            border-radius: 50%;
+            opacity: 0;
+            animation: splashMain 0.55s ease-out infinite;
+        }
+        .splash-group::before,
+        .splash-group::after {
+            content: ''; position: absolute;
+            width: 1.5px; height: 1.5px;
+            background: rgba(230,230,230,0.45);
+            border-radius: 50%;
+            animation: splashSide 0.55s ease-out infinite;
+        }
+        .splash-group::before {
+            left: -1px; top: 0;
+            animation-name: splashLeft;
+        }
+        .splash-group::after {
+            right: -1px; top: 0;
+            animation-name: splashRight;
+        }
+        @keyframes splashMain {
+            0% { transform: translateY(0) scale(0.2); opacity: 0; }
+            15% { transform: translateY(-7px) scale(1); opacity: 0.8; }
+            45% { transform: translateY(-4px) scale(0.7); opacity: 0.3; }
+            100% { transform: translateY(2px) scale(0); opacity: 0; }
+        }
+        @keyframes splashLeft {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            15% { transform: translate(-5px, -5px) scale(0.9); opacity: 0.6; }
+            45% { transform: translate(-8px, -1px) scale(0.5); opacity: 0.2; }
+            100% { transform: translate(-10px, 2px) scale(0); opacity: 0; }
+        }
+        @keyframes splashRight {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            15% { transform: translate(5px, -5px) scale(0.9); opacity: 0.6; }
+            45% { transform: translate(8px, -1px) scale(0.5); opacity: 0.2; }
+            100% { transform: translate(10px, 2px) scale(0); opacity: 0; }
+        }
+        .ripple {
+            position: absolute; bottom: 0;
+            width: 4px; height: 1px;
+            background: rgba(210,210,210,0.25);
+            border-radius: 50%;
+            opacity: 0;
+            animation: rippleAnim 0.6s ease-out infinite;
+        }
+        @keyframes rippleAnim {
+            0% { transform: scaleX(0.2); opacity: 0; }
+            20% { transform: scaleX(1); opacity: 0.4; }
+            100% { transform: scaleX(5); opacity: 0; }
+        }
+
+        /* Mist effect */
+        .graveyard::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 100%, rgba(240,238,235,0.04) 0%, transparent 60%);
+            pointer-events: none;
+            animation: mist 10s ease-in-out infinite;
+        }
+        @keyframes mist {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Dust particles */
+        .dust {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: rgba(240,238,235,0.15);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .dust:nth-child(1) { left: 20%; top: -10px; animation: fall 18s linear infinite; animation-delay: 0s; }
+        .dust:nth-child(2) { left: 60%; top: -10px; animation: fall 22s linear infinite; animation-delay: 5s; }
+        .dust:nth-child(3) { left: 80%; top: -10px; animation: fall 16s linear infinite; animation-delay: 10s; }
+        .dust:nth-child(4) { left: 35%; top: -10px; animation: fall 25s linear infinite; animation-delay: 3s; }
+        @keyframes fall {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(100vh) translateX(30px); opacity: 0; }
+        }
+
+        #tombstoneContainer {
+            margin-top: clamp(80px, 12vh, 160px);
+        }
+        .tombstone-solo {
+            width: 280px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 56px 36px 48px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            animation: breathe 7s ease-in-out infinite;
+            transition: border-color 0.6s;
+        }
+        .tombstone-solo:hover {
+            border-color: var(--text-secondary);
+        }
+        @keyframes breathe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .tombstone-id {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 56px; font-weight: 300;
+            color: var(--text-tertiary); line-height: 1;
+            margin-bottom: 20px; opacity: 0.4;
+        }
+        .tombstone-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px; font-weight: 600;
+            line-height: 1.2; color: var(--text);
+            margin-bottom: 8px;
+        }
+        .tombstone-year {
+            font-size: 12px; color: var(--text-secondary);
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        .tombstone-line {
+            width: 32px; height: 1px;
+            background: var(--line); margin: 20px auto;
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 28%; left: 50%;
+            transform: translateX(-50%);
+            width: 600px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--line), transparent);
+            opacity: 0.4; z-index: 1;
+        }
+        .grass::before, .grass::after {
+            content: ''; position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--line), transparent);
+            opacity: 0.6;
+        }
+        .grass::before { width: 200px; top: -8px; left: 10%; }
+        .grass::after { width: 300px; top: 12px; right: 5%; }
+
+        .epitaph {
+            margin-top: 48px;
+            font-size: 13px; color: var(--text-tertiary);
+            font-style: italic; letter-spacing: 0.5px;
+            text-align: center; max-width: 400px; line-height: 1.8;
+            z-index: 2; position: relative;
+        }
+
+        .site-footer {
+            border-top: 1px solid var(--line); padding: 32px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 10px; font-weight: 500; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--text-tertiary);
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .graveyard { padding: 60px 24px; }
+            .top-bar { padding: 16px 20px; }
+            .tombstone-solo { width: 240px; padding: 40px 28px 36px; }
+            .grass { width: 80vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo">UpLabs</a>
+            <div class="sidebar-bottom">
+                <a href="index.html" class="sidebar-icon"><i class="fas fa-arrow-left" style="font-size:10px;"></i></a>
+                <a href="#" class="sidebar-icon" onclick="scrollToTop()"><i class="fas fa-arrow-up" style="font-size:10px;"></i></a>
+            </div>
+        </aside>
+
+        <div class="main">
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <a href="index.html" id="backLink">← Back to Works</a>
+                </div>
+                <div class="top-bar-right">
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <section class="graveyard" id="graveyard">
+                <div class="svg-bg"></div>
+                <div class="rain">
+                    <div class="drop" style="left:63.9%;height:63px;width:1px;animation-duration:0.5s;animation-delay:0.67s;"></div>
+                    <div class="drop" style="left:67.7%;height:167px;width:1px;animation-duration:0.4s;animation-delay:1.27s;"></div>
+                    <div class="drop" style="left:9.4%;height:87px;width:2px;animation-duration:0.68s;animation-delay:1.68s;"></div>
+                    <div class="drop" style="left:22.0%;height:130px;width:1px;animation-duration:0.8s;animation-delay:0.02s;"></div>
+                    <div class="drop" style="left:69.8%;height:100px;width:1px;animation-duration:0.44s;animation-delay:2.87s;"></div>
+                    <div class="drop" style="left:10.2%;height:105px;width:1px;animation-duration:0.55s;animation-delay:1.03s;"></div>
+                    <div class="drop" style="left:80.7%;height:147px;width:2px;animation-duration:0.64s;animation-delay:2.92s;"></div>
+                    <div class="drop" style="left:7.9%;height:95px;width:1px;animation-duration:0.7s;animation-delay:2.66s;"></div>
+                    <div class="drop" style="left:57.7%;height:144px;width:1px;animation-duration:0.38s;animation-delay:0.68s;"></div>
+                    <div class="drop" style="left:98.5%;height:162px;width:2px;animation-duration:0.83s;animation-delay:1.14s;"></div>
+                    <div class="drop" style="left:63.6%;height:103px;width:1px;animation-duration:0.55s;animation-delay:0.63s;"></div>
+                    <div class="drop" style="left:70.2%;height:142px;width:1px;animation-duration:0.39s;animation-delay:1.9s;"></div>
+                    <div class="drop" style="left:16.3%;height:105px;width:1px;animation-duration:0.89s;animation-delay:1.92s;"></div>
+                    <div class="drop" style="left:68.5%;height:161px;width:1px;animation-duration:0.78s;animation-delay:0.69s;"></div>
+                    <div class="drop" style="left:80.5%;height:108px;width:1px;animation-duration:0.39s;animation-delay:2.74s;"></div>
+                    <div class="drop" style="left:21.3%;height:119px;width:1px;animation-duration:0.84s;animation-delay:1.93s;"></div>
+                    <div class="drop" style="left:26.5%;height:89px;width:2px;animation-duration:0.66s;animation-delay:0.79s;"></div>
+                    <div class="drop" style="left:89.8%;height:107px;width:2px;animation-duration:0.47s;animation-delay:2.99s;"></div>
+                    <div class="drop" style="left:9.1%;height:65px;width:2px;animation-duration:0.41s;animation-delay:1.88s;"></div>
+                    <div class="drop" style="left:59.6%;height:106px;width:1px;animation-duration:0.68s;animation-delay:1.4s;"></div>
+                    <div class="drop" style="left:97.1%;height:163px;width:1px;animation-duration:0.36s;animation-delay:2.16s;"></div>
+                    <div class="drop" style="left:76.9%;height:100px;width:1px;animation-duration:0.51s;animation-delay:0.47s;"></div>
+                    <div class="drop" style="left:95.4%;height:165px;width:1px;animation-duration:0.49s;animation-delay:1.5s;"></div>
+                    <div class="drop" style="left:50.8%;height:72px;width:1px;animation-duration:0.69s;animation-delay:2.53s;"></div>
+                    <div class="drop" style="left:15.3%;height:151px;width:1px;animation-duration:0.65s;animation-delay:2.34s;"></div>
+                    <div class="drop" style="left:59.9%;height:118px;width:1px;animation-duration:0.41s;animation-delay:1.09s;"></div>
+                    <div class="drop" style="left:23.9%;height:88px;width:2px;animation-duration:0.66s;animation-delay:0.24s;"></div>
+                    <div class="drop" style="left:81.6%;height:177px;width:2px;animation-duration:0.64s;animation-delay:0.38s;"></div>
+                    <div class="drop" style="left:94.7%;height:79px;width:1px;animation-duration:0.64s;animation-delay:1.82s;"></div>
+                    <div class="drop" style="left:92.9%;height:150px;width:2px;animation-duration:0.73s;animation-delay:2.14s;"></div>
+                    <div class="drop" style="left:99.5%;height:137px;width:1px;animation-duration:0.59s;animation-delay:1.55s;"></div>
+                    <div class="drop" style="left:24.8%;height:67px;width:1px;animation-duration:0.36s;animation-delay:1.66s;"></div>
+                    <div class="drop" style="left:0.7%;height:144px;width:1px;animation-duration:0.38s;animation-delay:0.2s;"></div>
+                    <div class="drop" style="left:86.0%;height:68px;width:1px;animation-duration:0.48s;animation-delay:2.01s;"></div>
+                    <div class="drop" style="left:53.9%;height:146px;width:1px;animation-duration:0.84s;animation-delay:1.73s;"></div>
+                    <div class="drop" style="left:78.5%;height:156px;width:2px;animation-duration:0.45s;animation-delay:0.29s;"></div>
+                    <div class="drop" style="left:35.4%;height:109px;width:1px;animation-duration:0.83s;animation-delay:0.16s;"></div>
+                    <div class="drop" style="left:6.1%;height:147px;width:1px;animation-duration:0.79s;animation-delay:0.33s;"></div>
+                    <div class="drop" style="left:19.0%;height:113px;width:1px;animation-duration:0.58s;animation-delay:0.84s;"></div>
+                    <div class="drop" style="left:87.4%;height:69px;width:1px;animation-duration:0.79s;animation-delay:2.57s;"></div>
+                    <div class="drop" style="left:5.1%;height:179px;width:1px;animation-duration:0.81s;animation-delay:2.91s;"></div>
+                    <div class="drop" style="left:16.6%;height:118px;width:1px;animation-duration:0.47s;animation-delay:1.2s;"></div>
+                    <div class="drop" style="left:16.5%;height:60px;width:2px;animation-duration:0.56s;animation-delay:2.78s;"></div>
+                    <div class="drop" style="left:28.5%;height:143px;width:2px;animation-duration:0.75s;animation-delay:2.35s;"></div>
+                    <div class="drop" style="left:15.5%;height:95px;width:1px;animation-duration:0.88s;animation-delay:1.74s;"></div>
+                    <div class="drop" style="left:74.8%;height:66px;width:1px;animation-duration:0.67s;animation-delay:1.51s;"></div>
+                    <div class="drop" style="left:5.7%;height:120px;width:1px;animation-duration:0.82s;animation-delay:0.21s;"></div>
+                    <div class="drop" style="left:67.5%;height:88px;width:1px;animation-duration:0.42s;animation-delay:2.67s;"></div>
+                    <div class="drop" style="left:57.9%;height:64px;width:1px;animation-duration:0.4s;animation-delay:1.97s;"></div>
+                    <div class="drop" style="left:93.5%;height:84px;width:2px;animation-duration:0.74s;animation-delay:0.72s;"></div>
+                    <div class="drop" style="left:13.1%;height:137px;width:1px;animation-duration:0.6s;animation-delay:2.79s;"></div>
+                    <div class="drop" style="left:0.9%;height:134px;width:1px;animation-duration:0.66s;animation-delay:0.3s;"></div>
+                    <div class="drop" style="left:50.6%;height:75px;width:1px;animation-duration:0.54s;animation-delay:0.21s;"></div>
+                    <div class="drop" style="left:37.0%;height:78px;width:1px;animation-duration:0.81s;animation-delay:2.11s;"></div>
+                    <div class="drop" style="left:66.8%;height:126px;width:1px;animation-duration:0.86s;animation-delay:0.31s;"></div>
+                    <div class="drop" style="left:26.4%;height:166px;width:1px;animation-duration:0.76s;animation-delay:0.47s;"></div>
+                    <div class="drop" style="left:60.5%;height:146px;width:1px;animation-duration:0.46s;animation-delay:1.9s;"></div>
+                    <div class="drop" style="left:50.5%;height:90px;width:2px;animation-duration:0.85s;animation-delay:0.15s;"></div>
+                    <div class="drop" style="left:82.9%;height:65px;width:1px;animation-duration:0.53s;animation-delay:0.39s;"></div>
+                    <div class="drop" style="left:16.2%;height:113px;width:1px;animation-duration:0.74s;animation-delay:1.68s;"></div>
+                </div>
+                <div class="splash-layer">
+                    <div class="splash-group" style="left:73.3%;animation-delay:2.42s;animation-duration:0.56s;"></div>
+                    <div class="splash-group" style="left:77.7%;animation-delay:1.62s;animation-duration:0.6s;"></div>
+                    <div class="splash-group" style="left:80.3%;animation-delay:1.97s;animation-duration:0.67s;"></div>
+                    <div class="splash-group" style="left:33.7%;animation-delay:2.47s;animation-duration:0.48s;"></div>
+                    <div class="splash-group" style="left:48.0%;animation-delay:1.17s;animation-duration:0.52s;"></div>
+                    <div class="splash-group" style="left:14.9%;animation-delay:0.46s;animation-duration:0.55s;"></div>
+                    <div class="splash-group" style="left:52.0%;animation-delay:1.96s;animation-duration:0.63s;"></div>
+                    <div class="splash-group" style="left:91.0%;animation-delay:1.45s;animation-duration:0.62s;"></div>
+                    <div class="splash-group" style="left:93.1%;animation-delay:2.03s;animation-duration:0.47s;"></div>
+                    <div class="splash-group" style="left:53.1%;animation-delay:0.91s;animation-duration:0.7s;"></div>
+                    <div class="splash-group" style="left:71.1%;animation-delay:1.62s;animation-duration:0.67s;"></div>
+                    <div class="splash-group" style="left:21.8%;animation-delay:1.99s;animation-duration:0.48s;"></div>
+                    <div class="splash-group" style="left:45.0%;animation-delay:1.71s;animation-duration:0.54s;"></div>
+                    <div class="splash-group" style="left:84.3%;animation-delay:0.78s;animation-duration:0.69s;"></div>
+                    <div class="ripple" style="left:79.9%;animation-delay:1.85s;animation-duration:0.64s;"></div>
+                    <div class="ripple" style="left:76.7%;animation-delay:1.09s;animation-duration:0.65s;"></div>
+                    <div class="ripple" style="left:58.6%;animation-delay:2.33s;animation-duration:0.56s;"></div>
+                    <div class="ripple" style="left:6.4%;animation-delay:0.7s;animation-duration:0.59s;"></div>
+                    <div class="ripple" style="left:16.1%;animation-delay:2.06s;animation-duration:0.73s;"></div>
+                    <div class="ripple" style="left:23.3%;animation-delay:1.65s;animation-duration:0.69s;"></div>
+                    <div class="ripple" style="left:87.0%;animation-delay:2.05s;animation-duration:0.59s;"></div>
+                    <div class="ripple" style="left:33.1%;animation-delay:2.05s;animation-duration:0.45s;"></div>
+                    <div class="ripple" style="left:19.8%;animation-delay:0.53s;animation-duration:0.7s;"></div>
+                    <div class="ripple" style="left:31.2%;animation-delay:1.42s;animation-duration:0.68s;"></div>
+                </div>
+                <div class="dust"></div>
+                <div class="dust"></div>
+                <div class="dust"></div>
+                <div class="dust"></div>
+                <div class="grass"></div>
+                <div id="tombstoneContainer"></div>
+                <div class="epitaph" id="epitaph"></div>
+
+            </section>
+
+            <footer class="site-footer">
+                <span>UpLabs — 2026</span>
+                <span id="footerRight">Product Boneyard</span>
+            </footer>
+        </div>
+    </div>
+
+<script>
+const i18n = {
+    zh: {
+        backText: '← 返回作品',
+        footerRight: '产品坟场',
+        noGrave: '未选择墓地',
+        notFound: '墓地未找到',
+        epitaph: '这里安息着一个曾经闪耀的创意。时间带走了它的光芒，却留下了永恒的印记。',
+    },
+    en: {
+        backText: '← Back to Works',
+        footerRight: 'Product Boneyard',
+        noGrave: 'No grave selected',
+        notFound: 'Grave not found',
+        epitaph: 'Here rests an idea that once shone bright. Time took its light, but left an eternal mark.',
+    }
+};
+
+let lang = localStorage.getItem('uplabs_lang') || 'en';
+
+function t(key) {
+    const val = i18n[lang] ? i18n[lang][key] : null;
+    return val ?? key;
+}
+
+function updateStaticText() {
+    const backLink = document.getElementById('backLink');
+    if (backLink) backLink.textContent = t('backText');
+    const footerRight = document.getElementById('footerRight');
+    if (footerRight) footerRight.textContent = t('footerRight');
+}
+
+const buried = [
+    { id:2, nameZh:"东方瓷韵", nameEn:"Oriental Porcelain", year:"2024" },
+    { id:4, nameZh:"静谧花园", nameEn:"Silent Garden", year:"2023" },
+    { id:9, nameZh:"光影剧场", nameEn:"Light Shadow Theater", year:"2023" },
+    { id:11, nameZh:"丝绸之路", nameEn:"Silk Road", year:"2024" },
+    { id:14, nameZh:"手工温度", nameEn:"Handmade Warmth", year:"2023" },
+    { id:16, nameZh:"品牌重塑", nameEn:"Brand Rebirth", year:"2024" },
+    { id:22, nameZh:"陶器工坊", nameEn:"Pottery Workshop", year:"2023" },
+    { id:23, nameZh:"城市档案", nameEn:"City Archives", year:"2024" }
+];
+
+function getActiveId() {
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'));
+    return isNaN(id) ? null : id;
+}
+
+function renderGraveyard() {
+    const container = document.getElementById('tombstoneContainer');
+    const epitaphEl = document.getElementById('epitaph');
+    const activeId = getActiveId();
+
+    if (!activeId) {
+        container.innerHTML = `<div style="color:var(--text-secondary);font-size:14px;">${t('noGrave')}</div>`;
+        epitaphEl.textContent = '';
+        return;
+    }
+
+    const p = buried.find(x => x.id === activeId);
+    if (!p) {
+        container.innerHTML = `<div style="color:var(--text-secondary);font-size:14px;">${t('notFound')}</div>`;
+        epitaphEl.textContent = '';
+        return;
+    }
+
+    const name = lang === 'zh' ? p.nameZh : p.nameEn;
+    container.innerHTML = `
+        <div class="tombstone-solo">
+            <div class="tombstone-id">${String(p.id).padStart(2,'0')}</div>
+            <div class="tombstone-line"></div>
+            <div class="tombstone-name">${name}</div>
+            <div class="tombstone-year">${p.year}</div>
+        </div>
+    `;
+    epitaphEl.textContent = t('epitaph');
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+updateStaticText();
+renderGraveyard();
+</script>
+</body>
+</html>

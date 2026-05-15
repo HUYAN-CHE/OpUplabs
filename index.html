@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uplabs Product Boneyard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f0eeeb;
+            --bg-warm: #eae7e2;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --text-tertiary: #999999;
+            --line: #d4d0ca;
+            --shadow-soft: 0 8px 40px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+        }
+        .container { display: grid; grid-template-columns: 64px 1fr; min-height: 100vh; }
+        .sidebar {
+            border-right: 1px solid var(--line); position: sticky; top: 0; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; padding: 24px 0;
+            background: var(--bg); z-index: 10;
+        }
+        .sidebar-logo {
+            writing-mode: vertical-rl; text-orientation: mixed;
+            font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 500;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: auto;
+            cursor: pointer; transition: opacity 0.3s;
+        }
+        .sidebar-logo:hover { opacity: 0.5; }
+        .sidebar-nav {
+            display: flex; flex-direction: column; gap: 32px; margin-bottom: auto;
+        }
+        .nav-item {
+            writing-mode: vertical-rl; text-orientation: mixed; font-size: 10px;
+            font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--text-secondary); cursor: pointer; transition: color 0.3s;
+            position: relative; padding: 4px 0;
+        }
+        .nav-item::after {
+            content: ''; position: absolute; left: 50%; top: 100%;
+            width: 1px; height: 16px; background: var(--line);
+            transform: translateX(-50%); opacity: 0; transition: opacity 0.3s;
+        }
+        .nav-item:hover, .nav-item.active { color: var(--text); }
+        .nav-item.active::after { opacity: 1; }
+        .sidebar-bottom {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+        .sidebar-icon {
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--line); border-radius: 50%; cursor: pointer;
+            transition: all 0.3s; font-size: 11px; color: var(--text-secondary);
+        }
+        .sidebar-icon:hover { border-color: var(--text); color: var(--text); }
+
+        .main { display: flex; flex-direction: column; }
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; border-bottom: 1px solid var(--line);
+            font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .top-bar-left { color: var(--text-secondary); }
+        .top-bar-right { display: flex; align-items: center; gap: 32px; }
+        .top-bar-right a {
+            color: var(--text-secondary); text-decoration: none;
+            transition: color 0.3s; cursor: pointer;
+        }
+        .top-bar-right a:hover { color: var(--text); }
+        .dot { width: 8px; height: 8px; background: var(--text); border-radius: 50%; }
+
+        .lang-toggle {
+            display: flex; align-items: center; border: 1px solid var(--line);
+            background: transparent; cursor: pointer; transition: border-color 0.3s; overflow: hidden;
+        }
+        .lang-toggle:hover { border-color: var(--text); }
+        .lang-option {
+            padding: 5px 12px; font-size: 10px; font-weight: 600;
+            letter-spacing: 1px; color: var(--text-tertiary);
+            transition: all 0.3s; border: none; background: none;
+            cursor: pointer; font-family: inherit;
+            -webkit-appearance: none; appearance: none; margin: 0;
+        }
+        .lang-option.active { background: var(--text); color: var(--bg); }
+        .lang-option:hover:not(.active) { color: var(--text); }
+
+        .page-section {
+            padding: 100px 40px;
+            border-bottom: 1px solid var(--line);
+        }
+        .page-section-inner { max-width: 720px; }
+        .page-section h2 {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: clamp(28px, 3.5vw, 42px); font-weight: 600;
+            line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em;
+        }
+        .page-section p {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.7; max-width: 520px;
+        }
+        #consulting, #brandDesign, #services, #aboutMe { display: none; }
+
+        .hero {
+            display: grid; grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--line); min-height: calc(100vh - 61px);
+        }
+        .hero-left {
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 48px 40px; border-right: 1px solid var(--line);
+        }
+        .hero-content { max-width: 420px; }
+        .hero-label {
+            font-size: 10px; font-weight: 600; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--text-secondary); margin-bottom: 32px;
+        }
+        .hero-title {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: clamp(32px, 4.5vw, 58px); font-weight: 600;
+            line-height: 1.08; margin-bottom: 24px; letter-spacing: -0.02em;
+        }
+        .hero-desc {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.7; max-width: 380px;
+        }
+        .hero-meta {
+            display: flex; gap: 40px; font-size: 10px; font-weight: 500;
+            letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-tertiary);
+        }
+        .hero-meta-item { display: flex; flex-direction: column; gap: 6px; }
+        .hero-meta-num {
+            font-family: 'Cormorant Garamond', serif; font-size: 28px;
+            font-weight: 600; color: var(--text); line-height: 1;
+        }
+        .hero-right {
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; background: var(--bg-warm);
+        }
+        .hero-visual {
+            width: 100%; height: 100%; display: flex;
+            align-items: center; justify-content: center; padding: 40px;
+        }
+        .plugin-showcase { position: relative; width: 320px; height: 400px; }
+        .plugin-card-float {
+            position: absolute; background: var(--surface); border: 1px solid var(--line);
+            padding: 20px; width: 200px;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .plugin-card-float:nth-child(1) { top: 0; left: 0; z-index: 3; }
+        .plugin-card-float:nth-child(2) { top: 60px; left: 80px; z-index: 2; opacity: 0.9; }
+        .plugin-card-float:nth-child(3) { top: 120px; left: 40px; z-index: 1; opacity: 0.7; }
+        .plugin-card-float .pc-icon {
+            width: 40px; height: 40px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 12px; font-size: 16px;
+        }
+        .plugin-card-float .pc-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .plugin-card-float .pc-dev { font-size: 10px; color: var(--text-tertiary); }
+
+        .plugin-list { padding: 0; }
+        .list-header {
+            display: grid; grid-template-columns: 80px 1fr 200px 140px 100px;
+            padding: 16px 40px; border-bottom: 1px solid var(--line); font-size: 10px;
+            font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+        .list-item {
+            display: grid; grid-template-columns: 80px 1fr 200px 140px 100px;
+            padding: 28px 40px; border-bottom: 1px solid var(--line);
+            cursor: pointer; transition: background 0.4s; align-items: center;
+        }
+        .list-item:hover { background: var(--surface); }
+        .list-item.active {
+            background: var(--surface);
+            border-bottom: none;
+        }
+        .list-item .li-num {
+            font-family: 'Cormorant Garamond', serif; font-size: 20px;
+            font-weight: 500; color: var(--text-tertiary);
+        }
+        .list-item .li-name {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: 24px; font-weight: 600; line-height: 1.2;
+            transition: transform 0.3s;
+        }
+        .list-item:hover .li-name, .list-item.active .li-name { transform: translateX(8px); }
+        .list-item .li-cat { font-size: 11px; color: var(--text-secondary); letter-spacing: 0.5px; }
+        .list-item .li-status {
+            font-size: 12px; color: var(--text-secondary); letter-spacing: 0.5px;
+        }
+        .list-item .li-users { font-size: 11px; color: var(--text-tertiary); text-align: right; }
+
+        /* ===== Expand Panel ===== */
+        .expand-panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            background: var(--surface);
+        }
+        .expand-panel.open {
+            grid-template-rows: 1fr;
+        }
+        .expand-panel > .expand-wrapper {
+            overflow: hidden;
+        }
+        .expand-content {
+            padding: 0 40px 36px;
+        }
+
+        .expand-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 64px;
+            align-items: stretch;
+        }
+        .expand-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 2px 0;
+        }
+        .expand-left-top {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .expand-icon {
+            width: 48px; height: 48px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .expand-title {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: 24px; font-weight: 600; line-height: 1.15;
+        }
+        .expand-status-row {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--text-secondary);
+        }
+
+        .expand-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+        .expand-desc {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .expand-actions {
+            display: flex;
+            padding-top: 16px;
+            margin-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 28px; font-size: 11px; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            font-family: inherit; cursor: pointer;
+            transition: all 0.3s; border: none; text-decoration: none;
+        }
+        .btn-primary { background: var(--text); color: var(--bg); }
+        .btn-primary:hover { background: var(--text-secondary); }
+        .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+        .btn-ghost:hover { border-color: var(--text); }
+
+        .empty-state { text-align: center; padding: 120px 40px; color: var(--text-tertiary); }
+        .empty-state h3 {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: 28px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;
+        }
+        .empty-state p { font-size: 13px; }
+
+        .site-footer {
+            border-top: 1px solid var(--line); padding: 32px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 10px; font-weight: 500; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--text-tertiary);
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        .hero { grid-template-columns: 1fr; }
+            .hero-left { border-right: none; border-bottom: 1px solid var(--line); }
+            .hero-right { min-height: 400px; }
+            .list-header { display: none; }
+            .list-item { grid-template-columns: 50px 1fr auto; gap: 16px; }
+            .list-item .li-cat, .list-item .li-users { display: none; }
+            .expand-content { padding: 0 24px 28px; }
+            .expand-layout { grid-template-columns: 1fr; gap: 20px; }
+            .expand-left { flex-direction: row; align-items: center; gap: 16px; padding: 0; }
+            .expand-right { padding: 0; }
+            .expand-actions { border-top: none; padding-top: 0; margin-top: 0; }
+            .expand-actions { flex-wrap: wrap; }
+            .top-bar { padding: 16px 20px; }
+            .top-bar-right { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+            .top-bar-right a { font-size: 10px; }
+            .lang-toggle { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-logo" onclick="resetFilter()">UpLabs</div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <div class="nav-item active" data-cat="all">All</div>
+                <div class="nav-item" data-cat="brand">Brand</div>
+                <div class="nav-item" data-cat="digital">Digital</div>
+                <div class="nav-item" data-cat="product">Product</div>
+                <div class="nav-item" data-cat="editorial">Editorial</div>
+            </nav>
+            <div class="sidebar-bottom">
+                <div class="sidebar-icon"><i class="fas fa-search" style="font-size:10px;"></i></div>
+                <div class="sidebar-icon" onclick="scrollToTop()"><i class="fas fa-arrow-up" style="font-size:10px;"></i></div>
+            </div>
+        </aside>
+
+        <div class="main">
+            <div class="top-bar">
+                <div class="top-bar-left" id="topBarLeft">Uplabs Product Boneyard</div>
+                <div class="top-bar-right">
+                    <a onclick="scrollToList()" id="navWork">Work</a>
+                    <a onclick="scrollToSection('consulting')" id="navConsulting">Consulting</a>
+                    <a onclick="scrollToSection('brandDesign')" id="navBrandDesign">Brand Design</a>
+                    <a onclick="scrollToSection('services')" id="navServices">Services</a>
+                    <a onclick="scrollToSection('aboutMe')" id="navAboutMe">About Me</a>
+                    <a onclick="scrollToSection('contact')" id="navContact">Contact</a>
+                    <div class="lang-toggle">
+                        <span class="lang-option active" data-lang="zh" onclick="setLang('zh')">中</span>
+                        <span class="lang-option" data-lang="en" onclick="setLang('en')">En</span>
+                    </div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <section class="hero">
+                <div class="hero-left">
+                    <div class="hero-content">
+                        <div class="hero-label" id="heroLabel">Uplabs Product Boneyard</div>
+                        <h1 class="hero-title" id="heroTitle">Creative practices that infuse visual soul into brands and spaces.</h1>
+                        <p class="hero-desc" id="heroDesc">A curated collection spanning brand identity, digital experience, product design, and editorial publishing. Each project is a deep exploration of visual language and emotional communication.</p>
+                    </div>
+                    <div class="hero-meta">
+                        <div class="hero-meta-item">
+                            <span class="hero-meta-num" id="totalCount">24</span>
+                            <span id="metaExtensions">个插件</span>
+                        </div>
+                        <div class="hero-meta-item">
+                            <span class="hero-meta-num">6</span>
+                            <span id="metaCategories">Categories</span>
+                        </div>
+                        <div class="hero-meta-item">
+                            <span class="hero-meta-num">6</span>
+                            <span id="metaAvg">Active</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-visual">
+                        <div class="plugin-showcase">
+                            <div class="plugin-card-float">
+                                <div class="pc-icon" style="background:#3d3d3d;color:#fff;"><i class="fas fa-moon"></i></div>
+                                <div class="pc-name" id="floatName1">Moonlit Café</div>
+                                <div class="pc-dev" id="floatDev1">Moonlit Coffee</div>
+                            </div>
+                            <div class="plugin-card-float">
+                                <div class="pc-icon" style="background:#c4a882;color:#1a1a1a;"><i class="fas fa-wine-glass-alt"></i></div>
+                                <div class="pc-name" id="floatName2">Oriental Porcelain</div>
+                                <div class="pc-dev" id="floatDev2">Oriental Ceramics</div>
+                            </div>
+                            <div class="plugin-card-float">
+                                <div class="pc-icon" style="background:#eae7e2;color:#1a1a1a;"><i class="fas fa-compass"></i></div>
+                                <div class="pc-name" id="floatName3">Urban Wanderer</div>
+                                <div class="pc-dev" id="floatDev3">Urban Lab</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="plugin-list" id="pluginList">
+                <div class="list-header">
+                    <div id="thNo">No.</div>
+                    <div id="thName">Name</div>
+                    <div id="thCat">Category</div>
+                    <div id="thRating">Status</div>
+                    <div style="text-align:right;" id="thUsers">Year</div>
+                </div>
+                <div id="listContainer"></div>
+            </section>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <h3 id="emptyTitle">No projects found</h3>
+                <p id="emptyDesc">Try a different category</p>
+            </div>
+
+            <section class="page-section" id="consulting">
+                <div class="page-section-inner">
+                    <h2 id="secConsultingTitle">Consulting</h2>
+                    <p id="secConsultingDesc">Strategic design consulting for brands seeking clarity and direction. We help you find the visual language that speaks to your audience.</p>
+                </div>
+            </section>
+
+            <section class="page-section" id="brandDesign">
+                <div class="page-section-inner">
+                    <h2 id="secBrandDesignTitle">Brand Design</h2>
+                    <p id="secBrandDesignDesc">Complete brand identity systems that endure. From logo to guidelines, we craft cohesive visual narratives.</p>
+                </div>
+            </section>
+
+            <section class="page-section" id="services">
+                <div class="page-section-inner">
+                    <h2 id="secServicesTitle">Services</h2>
+                    <p id="secServicesDesc">A full spectrum of creative services — digital experiences, editorial design, product interfaces, and spatial branding.</p>
+                </div>
+            </section>
+
+            <section class="page-section" id="aboutMe">
+                <div class="page-section-inner">
+                    <h2 id="secAboutMeTitle">About Me</h2>
+                    <p id="secAboutMeDesc">Independent creative practitioner focused on the intersection of visual design and emotional communication. Based in Shanghai, working globally.</p>
+                </div>
+            </section>
+
+            <footer class="site-footer">
+                <span id="footerLeft">UpLabs — 2026</span>
+                <span id="footerRight">Creative Production</span>
+            </footer>
+        </div>
+    </div>
+
+<script>
+/* ========================  I18N  ======================== */
+const i18n = {
+    zh: {
+        topBarLeft: '向上求索-产品坟场',
+        navWork: '产品', navConsulting: '咨询', navBrandDesign: '品牌设计', navServices: '服务', navAboutMe: '关于我', navContact: '联系',
+        heroLabel: '向上求索-产品坟场',
+        heroTitle: '为品牌与空间注入视觉灵魂的创意实践。',
+        heroDesc: '跨越品牌识别、数字体验、产品设计与编辑出版的精选产品合集。每一个产品都是对视觉语言与情感传达的深度探索。',
+        metaExtensions: '个产品', metaCategories: '个分类', metaAvg: '进行中',
+        thNo: '序号', thName: '名称', thCat: '分类', thRating: '状态', thUsers: '年份',
+        emptyTitle: '未找到产品', emptyDesc: '尝试其他分类',
+        footerLeft: 'UpLabs — 2026', footerRight: '创意制作',
+        floatNames: ['月影咖啡馆','东方瓷韵','城市漫游者'],
+        floatDev1: '月影咖啡', floatDev2: '东方瓷艺', floatDev3: '城市实验室',
+        cats: { all: '全部', brand: '品牌', digital: '数字', product: '产品', editorial: '编辑' },
+        catLabels: {
+            brand: '品牌设计', digital: '数字体验', product: '产品设计', editorial: '编辑设计'
+        },
+        secConsultingTitle: '咨询', secConsultingDesc: '为寻求清晰与方向的品牌提供战略性设计咨询。我们帮助你找到能与受众产生共鸣的视觉语言。',
+        secBrandDesignTitle: '品牌设计', secBrandDesignDesc: '经得起时间考验的完整品牌识别系统。从标志到规范手册，我们打造连贯的视觉叙事。',
+        secServicesTitle: '服务', secServicesDesc: '全谱系创意服务 — 数字体验、编辑设计、产品界面与空间品牌。',
+        secAboutMeTitle: '关于我', secAboutMeDesc: '专注于视觉设计与情感传达交叉领域的独立创意实践者。base 上海，面向全球。',
+        modal: {
+            descLabel: '描述', catLabel: '分类',
+            usersLabel: '年份', ratingLabel: '状态', reviewsLabel: '周期',
+            visitStore: '查看产品', visitGrave: '进入墓地', close: '收起',
+            free: '精选', chromeExt: '创意产品'
+        }
+    },
+    en: {
+        topBarLeft: 'Uplabs Product Boneyard',
+        navWork: 'Product', navConsulting: 'Consulting', navBrandDesign: 'Brand Design', navServices: 'Services', navAboutMe: 'About Me', navContact: 'Contact',
+        heroLabel: 'Uplabs Product Boneyard',
+        heroTitle: 'Creative practices that infuse visual soul into brands and spaces.',
+        heroDesc: 'A curated collection spanning brand identity, digital experience, product design, and editorial publishing. Each project is a deep exploration of visual language and emotional communication.',
+        metaExtensions: 'Products', metaCategories: 'Categories', metaAvg: 'Active',
+        thNo: 'No.', thName: 'Name', thCat: 'Category', thRating: 'Status', thUsers: 'Year',
+        emptyTitle: 'No products found', emptyDesc: 'Try a different category',
+        footerLeft: 'UpLabs — 2026', footerRight: 'Creative Production',
+        floatNames: ['Moonlit Café','Oriental Porcelain','Urban Wanderer'],
+        floatDev1: 'Moonlit Coffee', floatDev2: 'Oriental Ceramics', floatDev3: 'Urban Lab',
+        cats: { all: 'All', brand: 'Brand', digital: 'Digital', product: 'Product', editorial: 'Editorial' },
+        catLabels: {
+            brand: 'Brand Design', digital: 'Digital Experience', product: 'Product Design', editorial: 'Editorial Design'
+        },
+        secConsultingTitle: 'Consulting', secConsultingDesc: 'Strategic design consulting for brands seeking clarity and direction. We help you find the visual language that speaks to your audience.',
+        secBrandDesignTitle: 'Brand Design', secBrandDesignDesc: 'Complete brand identity systems that endure. From logo to guidelines, we craft cohesive visual narratives.',
+        secServicesTitle: 'Services', secServicesDesc: 'A full spectrum of creative services — digital experiences, editorial design, product interfaces, and spatial branding.',
+        secAboutMeTitle: 'About Me', secAboutMeDesc: 'Independent creative practitioner focused on the intersection of visual design and emotional communication. Based in Shanghai, working globally.',
+        modal: {
+            descLabel: 'Description', catLabel: 'Category',
+            usersLabel: 'Year', ratingLabel: 'Status', reviewsLabel: 'Duration',
+            visitStore: 'View Product', visitGrave: 'Visit Grave', close: 'Collapse',
+            free: 'Selected', chromeExt: 'Creative Product'
+        }
+    }
+};
+
+let lang = localStorage.getItem('uplabs_lang') || 'en';
+
+function setLang(l) {
+    lang = l;
+    localStorage.setItem('uplabs_lang', l);
+    document.querySelectorAll('.lang-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === l);
+    });
+    applyI18n();
+    renderList();
+}
+
+function t(key) {
+    const keys = key.split('.');
+    let val = i18n[lang];
+    for (const k of keys) { if (val == null) return key; val = val[k]; }
+    return val ?? key;
+}
+
+function applyI18n() {
+    const ids = [
+        'topBarLeft','navWork','navConsulting','navBrandDesign','navServices','navAboutMe','navContact',
+        'secConsultingTitle','secConsultingDesc','secBrandDesignTitle','secBrandDesignDesc',
+        'secServicesTitle','secServicesDesc','secAboutMeTitle','secAboutMeDesc',
+        'heroLabel','heroTitle','heroDesc',
+        'metaExtensions','metaCategories','metaAvg',
+        'thNo','thName','thCat','thRating','thUsers',
+        'emptyTitle','emptyDesc',
+        'footerLeft','footerRight',
+        'floatDev1','floatDev2','floatDev3'
+    ];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = t(id); });
+
+    ['floatName1','floatName2','floatName3'].forEach((id, i) => {
+        const el = document.getElementById(id); if (el) el.textContent = t('floatNames')[i];
+    });
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.textContent = t('cats.' + item.dataset.cat);
+    });
+}
+
+/* ========================  DATA  ======================== */
+const pluginsBase = [
+    { id:1, nameZh:"月影咖啡馆", nameEn:"Moonlit Café", devZh:"月影咖啡", devEn:"Moonlit Coffee", cat:"brand", statusZh:"已完成", statusEn:"Completed", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2025", icon:"fas fa-moon", iconBg:"#3d3d3d", url:"#", descZh:"为独立精品咖啡馆打造的全套品牌识别系统。从标志设计到空间视觉，以月影与咖啡香气的意象贯穿始终。", descEn:"A complete brand identity system for an independent boutique café. From logo design to spatial visuals, the imagery of moonlight and coffee aroma runs throughout." },
+    { id:2, nameZh:"东方瓷韵", nameEn:"Oriental Porcelain", devZh:"东方瓷艺", devEn:"Oriental Ceramics", cat:"product", statusZh:"已入土", statusEn:"Buried", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2024", icon:"fas fa-wine-glass-alt", iconBg:"#c4a882", url:"#", descZh:"传统陶瓷工艺的当代产品化探索。通过极简造型与釉色实验，让千年瓷文化融入现代生活场景。", descEn:"A contemporary product exploration of traditional ceramic craftsmanship. Through minimalist forms and glaze experiments, millennia-old porcelain culture merges into modern living." },
+    { id:3, nameZh:"城市漫游者", nameEn:"Urban Wanderer", devZh:"城市实验室", devEn:"Urban Lab", cat:"digital", statusZh:"迭代中", statusEn:"Iterating", reviewsZh:"2个月", reviewsEn:"2 mo", users:"2025", icon:"fas fa-compass", iconBg:"#5a7d8c", url:"#", descZh:"城市探索类移动应用的概念设计。以地图为画布，用足迹连接城市中隐秘的角落与故事。", descEn:"Concept design for a city exploration mobile app. Using the map as a canvas, footprints connect hidden corners and stories across the city." },
+    { id:4, nameZh:"静谧花园", nameEn:"Silent Garden", devZh:"静谧出版", devEn:"Silent Press", cat:"editorial", statusZh:"已入土", statusEn:"Buried", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2023", icon:"fas fa-leaf", iconBg:"#7a9e7e", url:"#", descZh:"一本关于植物与内心平静的独立杂志。版式设计以大量留白呼应花园的空灵与静谧。", descEn:"An independent magazine about plants and inner peace. The typography uses generous white space to echo the ethereal quietness of a garden." },
+    { id:5, nameZh:"未来叙事", nameEn:"Future Narrative", devZh:"未来科技", devEn:"Future Tech", cat:"brand", statusZh:"进行中", statusEn:"In Progress", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2025", icon:"fas fa-atom", iconBg:"#4a5568", url:"#", descZh:"科技文化品牌的视觉体系构建。以动态粒子与几何语言，呈现人类与技术的共生关系。", descEn:"Visual system construction for a tech culture brand. Using dynamic particles and geometric language to present the symbiotic relationship between humanity and technology." },
+    { id:6, nameZh:"纸间诗意", nameEn:"Paper Poetry", devZh:"纸间工坊", devEn:"Paper Studio", cat:"editorial", statusZh:"已完成", statusEn:"Completed", reviewsZh:"2个月", reviewsEn:"2 mo", users:"2024", icon:"fas fa-book-open", iconBg:"#b8a99a", url:"#", descZh:"手工书籍装帧与排版的艺术实践。每一页都是纸张与文字之间的对话，触感与视觉并重。", descEn:"An artistic practice of handmade bookbinding and typography. Every page is a dialogue between paper and text, with equal weight on tactile and visual experience." },
+    { id:7, nameZh:"深海之声", nameEn:"Deep Sea Voice", devZh:"海洋保护", devEn:"Ocean Conservation", cat:"digital", statusZh:"已完成", statusEn:"Completed", reviewsZh:"5个月", reviewsEn:"5 mo", users:"2025", icon:"fas fa-water", iconBg:"#4a7c8c", url:"#", descZh:"海洋生态保护主题的数字互动装置。用户可以通过手势探索虚拟深海，聆听鲸鱼的歌声。", descEn:"A digital interactive installation themed on ocean conservation. Users can explore a virtual deep sea through gestures and listen to whale songs." },
+    { id:8, nameZh:"原木生活", nameEn:"Raw Wood Living", devZh:"原木工坊", devEn:"Raw Wood Studio", cat:"product", statusZh:"已完成", statusEn:"Completed", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2024", icon:"fas fa-tree", iconBg:"#8b7355", url:"#", descZh:"可持续家具系列产品设计。保留木材的天然肌理与缺陷，让每一件家具都拥有独一无二的性格。", descEn:"Sustainable furniture series design. Preserving the natural grain and imperfections of wood, each piece of furniture possesses a unique character." },
+    { id:9, nameZh:"光影剧场", nameEn:"Light Shadow Theater", devZh:"光影剧团", devEn:"Light Shadow Troupe", cat:"brand", statusZh:"已入土", statusEn:"Buried", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2023", icon:"fas fa-theater-masks", iconBg:"#2d2d2d", url:"#", descZh:"独立剧场的品牌重塑项目。以光影为设计语言，重新定义表演艺术机构的文化身份。", descEn:"A brand redesign project for an independent theater. Using light and shadow as design language, redefining the cultural identity of a performing arts institution." },
+    { id:10, nameZh:"像素记忆", nameEn:"Pixel Memory", devZh:"记忆存档", devEn:"Memory Archive", cat:"digital", statusZh:"迭代中", statusEn:"Iterating", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2025", icon:"fas fa-memory", iconBg:"#6b7b8c", url:"#", descZh:"数字遗产存档平台的界面设计。帮助用户整理、保存和分享跨越数十年的数字生活片段。", descEn:"Interface design for a digital legacy archiving platform. Helping users organize, preserve, and share digital life fragments spanning decades." },
+    { id:11, nameZh:"丝绸之路", nameEn:"Silk Road", devZh:"丝路文化", devEn:"Silk Road Culture", cat:"editorial", statusZh:"已入土", statusEn:"Buried", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2024", icon:"fas fa-route", iconBg:"#b8860b", url:"#", descZh:"丝绸之路文化主题的视觉出版物。融合历史文献与现代设计手法，讲述跨越时空的贸易与文化交流。", descEn:"A visual publication themed on Silk Road culture. Blending historical documents with modern design techniques to tell stories of trade and cultural exchange across time and space." },
+    { id:12, nameZh:"极简主义", nameEn:"Minimalist Manifesto", devZh:"减法生活", devEn:"Subtractive Living", cat:"brand", statusZh:"已完成", statusEn:"Completed", reviewsZh:"2个月", reviewsEn:"2 mo", users:"2025", icon:"fas fa-minus", iconBg:"#999999", url:"#", descZh:"一个倡导减法生活的品牌全案。用最克制的视觉语言，传递最丰富的生活哲学。", descEn:"A complete brand case advocating subtractive living. Using the most restrained visual language to convey the richest life philosophy." },
+    { id:13, nameZh:"数字荒野", nameEn:"Digital Wilderness", devZh:"荒野科技", devEn:"Wilderness Tech", cat:"digital", statusZh:"进行中", statusEn:"In Progress", reviewsZh:"5个月", reviewsEn:"5 mo", users:"2024", icon:"fas fa-vr-cardboard", iconBg:"#5c7c5c", url:"#", descZh:"虚拟现实自然体验项目的交互设计。在数字世界中重建一片荒野，让城市人重新感受自然的力量。", descEn:"Interaction design for a VR nature experience project. Reconstructing a wilderness in the digital world, allowing urban dwellers to reconnect with the power of nature." },
+    { id:14, nameZh:"手工温度", nameEn:"Handmade Warmth", devZh:"匠心皮具", devEn:"Craft Leather", cat:"product", statusZh:"已入土", statusEn:"Buried", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2023", icon:"fas fa-hand-holding-heart", iconBg:"#a0785a", url:"#", descZh:"手工皮具品牌的系列产品设计。从选材到缝线的每一个细节，都在讲述匠人的专注与温度。", descEn:"Product series design for a handmade leather goods brand. From material selection to stitching, every detail tells the story of the craftsman's focus and warmth." },
+    { id:15, nameZh:"超现实梦境", nameEn:"Surreal Dreams", devZh:"梦境画廊", devEn:"Dream Gallery", cat:"editorial", statusZh:"已完成", statusEn:"Completed", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2025", icon:"fas fa-cloud-moon", iconBg:"#7a6b8c", url:"#", descZh:"当代艺术展览的展陈与出版物设计。将超现实主义画作转化为三维空间的沉浸式阅读体验。", descEn:"Exhibition curation and publication design for a contemporary art show. Transforming surrealist paintings into an immersive three-dimensional reading experience." },
+    { id:16, nameZh:"品牌重塑", nameEn:"Brand Rebirth", devZh:"百年老店", devEn:"Century Shop", cat:"brand", statusZh:"已入土", statusEn:"Buried", reviewsZh:"6个月", reviewsEn:"6 mo", users:"2024", icon:"fas fa-sync-alt", iconBg:"#6b6b6b", url:"#", descZh:"百年老字号的现代化品牌升级。在保留历史基因的同时，注入当代设计语言与年轻活力。", descEn:"A modern brand upgrade for a century-old heritage brand. Injecting contemporary design language and youthful energy while preserving its historical DNA." },
+    { id:17, nameZh:"虚拟空间", nameEn:"Virtual Space", devZh:"线上画廊", devEn:"Online Gallery", cat:"digital", statusZh:"进行中", statusEn:"In Progress", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2025", icon:"fas fa-cube", iconBg:"#5a6b7c", url:"#", descZh:"线上画廊的三维虚拟空间设计。观众可以自由漫游，近距离欣赏每一幅艺术作品的细节。", descEn:"3D virtual space design for an online gallery. Visitors can freely roam and examine the details of every artwork up close." },
+    { id:18, nameZh:"植物图鉴", nameEn:"Plant Atlas", devZh:"植物科普", devEn:"Botany Edu", cat:"product", statusZh:"已完成", statusEn:"Completed", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2024", icon:"fas fa-seedling", iconBg:"#6b8c5a", url:"#", descZh:"植物科普产品的视觉系统设计。将复杂的植物学知识转化为直观的图形语言与交互体验。", descEn:"Visual system design for a botanical education product. Transforming complex botanical knowledge into intuitive graphic language and interactive experience." },
+    { id:19, nameZh:"时间碎片", nameEn:"Time Fragments", devZh:"时间实验", devEn:"Time Lab", cat:"editorial", statusZh:"已完成", statusEn:"Completed", reviewsZh:"2个月", reviewsEn:"2 mo", users:"2023", icon:"fas fa-hourglass-half", iconBg:"#8c8c8c", url:"#", descZh:"一本关于时间感知的设计实验出版物。通过非线性排版与特殊纸张，探索时间的多重维度。", descEn:"A design experiment publication about the perception of time. Through nonlinear typography and special paper stocks, exploring the multiple dimensions of time." },
+    { id:20, nameZh:"纯粹几何", nameEn:"Pure Geometry", devZh:"几何建筑", devEn:"Geometry Arch", cat:"brand", statusZh:"已完成", statusEn:"Completed", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2025", icon:"fas fa-shapes", iconBg:"#7a7a7a", url:"#", descZh:"建筑事务所的品牌识别系统。以最基本的几何形态为起点，构建理性与诗意并存的视觉语言。", descEn:"Brand identity system for an architecture firm. Starting from the most basic geometric forms, building a visual language where rationality and poetry coexist." },
+    { id:21, nameZh:"数据可视化", nameEn:"Data Visualization", devZh:"气候数据", devEn:"Climate Data", cat:"digital", statusZh:"迭代中", statusEn:"Iterating", reviewsZh:"5个月", reviewsEn:"5 mo", users:"2024", icon:"fas fa-chart-line", iconBg:"#5c7a8c", url:"#", descZh:"气候数据的公共艺术可视化项目。将抽象的数据转化为可感知的光影与色彩，唤醒环保意识。", descEn:"A public art data visualization project on climate data. Transforming abstract data into perceptible light, shadow, and color to awaken environmental awareness." },
+    { id:22, nameZh:"陶器工坊", nameEn:"Pottery Workshop", devZh:"陶艺空间", devEn:"Pottery Space", cat:"product", statusZh:"已入土", statusEn:"Buried", reviewsZh:"4个月", reviewsEn:"4 mo", users:"2023", icon:"fas fa-hands", iconBg:"#a08060", url:"#", descZh:"陶艺工作坊的空间与器具整体设计。从拉坯机到茶杯，每一处细节都服务于双手与泥土的对话。", descEn:"Integrated spatial and tool design for a pottery workshop. From the wheel to the teacup, every detail serves the dialogue between hands and clay." },
+    { id:23, nameZh:"城市档案", nameEn:"City Archives", devZh:"城市记忆", devEn:"City Memory", cat:"editorial", statusZh:"已入土", statusEn:"Buried", reviewsZh:"3个月", reviewsEn:"3 mo", users:"2024", icon:"fas fa-building", iconBg:"#8c8c8c", url:"#", descZh:"城市变迁主题的纪录片式出版物。用档案照片与当代设计的对话，记录一座城市的记忆与伤痕。", descEn:"A documentary-style publication about urban transformation. Using a dialogue between archival photographs and contemporary design to record a city's memories and scars." },
+    { id:24, nameZh:"感知色彩", nameEn:"Perceived Color", devZh:"色彩心理", devEn:"Color Psychology", cat:"brand", statusZh:"已完成", statusEn:"Completed", reviewsZh:"2个月", reviewsEn:"2 mo", users:"2025", icon:"fas fa-eye", iconBg:"#8c7a6b", url:"#", descZh:"色彩心理学工作室的品牌设计。每一种色彩都被赋予情绪与叙事，帮助品牌找到最真实的表达。", descEn:"Brand design for a color psychology studio. Each color is endowed with emotion and narrative, helping brands find their most authentic expression." }
+];
+
+function getPlugins() {
+    return pluginsBase.map(p => ({
+        ...p,
+        displayName: lang === 'zh' ? p.nameZh : p.nameEn,
+        desc: lang === 'zh' ? p.descZh : p.descEn,
+        dev: lang === 'zh' ? p.devZh : p.devEn,
+        status: lang === 'zh' ? p.statusZh : p.statusEn,
+        reviews: lang === 'zh' ? p.reviewsZh : p.reviewsEn,
+        catLabel: t('catLabels.' + p.cat)
+    }));
+}
+
+/* ========================  RENDER  ======================== */
+let currentCat = 'all';
+let openId = null;
+
+function getFilteredPlugins() {
+    const all = getPlugins();
+    if (currentCat === 'all') return all;
+    return all.filter(p => p.cat === currentCat);
+}
+
+function buildExpandHtml(p) {
+    const textColor = (p.iconBg==='#fbbc04'||p.iconBg==='#61dafb') ? '#1a1a1a' : '#fff';
+    return `
+        <div class="expand-layout">
+            <div class="expand-left">
+                <div class="expand-left-top">
+                    <div class="expand-icon" style="background:${p.iconBg};color:${textColor};">
+                        <i class="${p.icon}"></i>
+                    </div>
+                    <h2 class="expand-title">${p.displayName}</h2>
+                </div>
+                <div class="expand-status-row" style="font-size:12px;color:var(--text-secondary);letter-spacing:0.5px;">${p.status}</div>
+            </div>
+            <div class="expand-right">
+                <div class="expand-ministats" style="display:flex;gap:32px;margin-bottom:16px;">
+                    <div>
+                        <div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">${t('modal.usersLabel')}</div>
+                        <div style="font-size:16px;font-weight:600;">${p.users}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">${t('modal.ratingLabel')}</div>
+                        <div style="font-size:16px;font-weight:600;">${p.status}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">${t('modal.reviewsLabel')}</div>
+                        <div style="font-size:16px;font-weight:600;">${p.reviews}</div>
+                    </div>
+                </div>
+                <p class="expand-desc">${p.desc}</p>
+                <div class="expand-actions">
+                    <a href="${p.status === '已入土' || p.status === 'Buried' ? 'grave.html?id=' + p.id : p.url}" ${p.status === '已入土' || p.status === 'Buried' ? '' : 'target="_blank"'} class="btn btn-primary">
+                        <i class="fas fa-arrow-right" style="font-size:13px;"></i>
+                        ${p.status === '已入土' || p.status === 'Buried' ? t('modal.visitGrave') : t('modal.visitStore')}
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderList() {
+    const list = getFilteredPlugins();
+    const container = document.getElementById('listContainer');
+    const empty = document.getElementById('emptyState');
+    const pluginList = document.getElementById('pluginList');
+
+    if (list.length === 0) {
+        container.innerHTML = '';
+        pluginList.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+    }
+
+    pluginList.style.display = 'block';
+    empty.style.display = 'none';
+    openId = null;
+
+    container.innerHTML = list.map((p, i) => `
+        <div class="list-item" onclick="toggleExpand(${p.id})" data-id="${p.id}">
+            <div class="li-num">${String(i+1).padStart(2,'0')}</div>
+            <div class="li-name">${p.displayName}</div>
+            <div class="li-cat">${p.catLabel}</div>
+            <div class="li-status" style="font-size:12px;color:var(--text-secondary);letter-spacing:0.5px;">${p.status}</div>
+            <div class="li-users">${p.users}</div>
+        </div>
+        <div class="expand-panel" id="expand-${p.id}">
+            <div class="expand-wrapper">
+                <div class="expand-content">
+                    ${buildExpandHtml(p)}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleExpand(id) {
+    const panel = document.getElementById('expand-' + id);
+    const item = document.querySelector('.list-item[data-id="' + id + '"]');
+    if (!panel) return;
+
+    if (openId === id) {
+        // collapse
+        panel.classList.remove('open');
+        item.classList.remove('active');
+        openId = null;
+    } else {
+        // collapse previous
+        if (openId !== null) {
+            const prevPanel = document.getElementById('expand-' + openId);
+            const prevItem = document.querySelector('.list-item[data-id="' + openId + '"]');
+            if (prevPanel) prevPanel.classList.remove('open');
+            if (prevItem) prevItem.classList.remove('active');
+        }
+        // expand new
+        panel.classList.add('open');
+        item.classList.add('active');
+        openId = id;
+
+        setTimeout(() => {
+            const rect = panel.getBoundingClientRect();
+            if (rect.bottom > window.innerHeight) {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }, 100);
+    }
+}
+
+function resetFilter() {
+    currentCat = 'all';
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.cat === 'all'));
+    renderList();
+}
+
+function scrollToList() {
+    document.getElementById('pluginList').scrollIntoView({ behavior: 'smooth' });
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* Events */
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        currentCat = item.dataset.cat;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        renderList();
+        scrollToList();
+    });
+});
+
+/* Init */
+setLang(lang);
+</script>
+</body>
+</html>
