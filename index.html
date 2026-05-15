@@ -292,25 +292,101 @@
             text-transform: uppercase; color: var(--text-tertiary);
         }
 
-        @media (max-width: 900px) {
+        /* ===== iMac / Large Desktop (1440px+) ===== */
+        @media (min-width: 1440px) {
+            .page-section { padding: 120px 60px; }
+            .page-section-inner { max-width: 900px; }
+            .hero-left { padding: 64px 60px; }
+            .hero-right { padding: 48px; }
+            .plugin-showcase { width: 380px; height: 480px; }
+            .plugin-card-float { width: 240px; padding: 24px; }
+            .plugin-card-float .pc-icon { width: 48px; height: 48px; font-size: 20px; }
+            .plugin-card-float:nth-child(2) { top: 70px; left: 100px; }
+            .plugin-card-float:nth-child(3) { top: 140px; left: 50px; }
+            .list-header { padding: 18px 60px; }
+            .list-item { padding: 32px 60px; }
+            .expand-content { padding: 0 60px 40px; }
+            .expand-layout { grid-template-columns: 220px 1fr; gap: 80px; }
+            .top-bar { padding: 24px 60px; }
+            .site-footer { padding: 40px 60px; }
+        }
+
+        /* ===== iPad (768px - 1023px) ===== */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .container { grid-template-columns: 52px 1fr; }
+            .sidebar { padding: 20px 0; }
+            .sidebar-logo { font-size: 12px; letter-spacing: 1px; }
+            .sidebar-nav { gap: 24px; }
+            .nav-item { font-size: 9px; letter-spacing: 1px; }
+            .sidebar-icon { width: 28px; height: 28px; font-size: 10px; }
+            .hero-left { padding: 36px 32px; }
+            .hero-title { font-size: clamp(28px, 3.5vw, 42px); }
+            .hero-desc { max-width: 320px; }
+            .hero-meta { gap: 32px; }
+            .hero-right { min-height: 380px; padding: 32px; }
+            .plugin-showcase { width: 260px; height: 340px; }
+            .plugin-card-float { width: 170px; padding: 16px; }
+            .plugin-card-float:nth-child(2) { top: 50px; left: 70px; }
+            .plugin-card-float:nth-child(3) { top: 100px; left: 35px; }
+            .list-header { grid-template-columns: 60px 1fr 140px 100px 80px; padding: 14px 32px; }
+            .list-item { grid-template-columns: 60px 1fr 140px 100px 80px; padding: 22px 32px; }
+            .list-item .li-name { font-size: 20px; }
+            .expand-content { padding: 0 32px 32px; }
+            .expand-layout { grid-template-columns: 170px 1fr; gap: 40px; }
+            .top-bar { padding: 16px 32px; }
+            .top-bar-right { gap: 20px; }
+            .top-bar-right a { font-size: 10px; }
+            .page-section { padding: 72px 32px; }
+            .site-footer { padding: 28px 32px; }
+        }
+
+        /* ===== Mobile (max-width: 767px) ===== */
+        @media (max-width: 767px) {
             .container { grid-template-columns: 1fr; }
             .sidebar { display: none; }
-        .hero { grid-template-columns: 1fr; }
-            .hero-left { border-right: none; border-bottom: 1px solid var(--line); }
-            .hero-right { min-height: 400px; }
+            .hero { grid-template-columns: 1fr; min-height: auto; }
+            .hero-left { padding: 28px 20px; border-right: none; border-bottom: 1px solid var(--line); }
+            .hero-content { max-width: 100%; }
+            .hero-label { margin-bottom: 16px; }
+            .hero-title { font-size: clamp(26px, 8vw, 36px); margin-bottom: 14px; }
+            .hero-desc { font-size: 13px; max-width: 100%; line-height: 1.65; }
+            .hero-meta { gap: 24px; margin-top: 28px; }
+            .hero-meta-num { font-size: 22px; }
+            .hero-right { min-height: 260px; padding: 20px; }
+            .plugin-showcase { width: 200px; height: 260px; }
+            .plugin-card-float { width: 130px; padding: 12px; }
+            .plugin-card-float .pc-icon { width: 28px; height: 28px; font-size: 12px; margin-bottom: 6px; }
+            .plugin-card-float .pc-name { font-size: 11px; }
+            .plugin-card-float .pc-dev { font-size: 9px; }
+            .plugin-card-float:nth-child(2) { top: 35px; left: 45px; }
+            .plugin-card-float:nth-child(3) { top: 70px; left: 22px; }
             .list-header { display: none; }
-            .list-item { grid-template-columns: 50px 1fr auto; gap: 16px; }
+            .list-item { grid-template-columns: 36px 1fr auto; gap: 10px; padding: 16px 20px; }
+            .list-item .li-num { font-size: 16px; }
+            .list-item .li-name { font-size: 17px; }
             .list-item .li-cat, .list-item .li-users { display: none; }
-            .expand-content { padding: 0 24px 28px; }
-            .expand-layout { grid-template-columns: 1fr; gap: 20px; }
-            .expand-left { flex-direction: row; align-items: center; gap: 16px; padding: 0; }
+            .expand-content { padding: 0 20px 24px; }
+            .expand-layout { grid-template-columns: 1fr; gap: 16px; }
+            .expand-left { flex-direction: row; align-items: center; gap: 12px; padding: 0; }
+            .expand-left-top { flex-direction: row; align-items: center; gap: 12px; }
+            .expand-icon { width: 40px; height: 40px; font-size: 16px; }
+            .expand-title { font-size: 18px; }
             .expand-right { padding: 0; }
-            .expand-actions { border-top: none; padding-top: 0; margin-top: 0; }
-            .expand-actions { flex-wrap: wrap; }
-            .top-bar { padding: 16px 20px; }
-            .top-bar-right { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
-            .top-bar-right a { font-size: 10px; }
+            .expand-ministats { gap: 20px; margin-bottom: 12px; }
+            .expand-desc { font-size: 13px; line-height: 1.65; }
+            .expand-actions { border-top: none; padding-top: 0; margin-top: 12px; flex-wrap: wrap; gap: 8px; }
+            .btn { padding: 12px 20px; font-size: 10px; }
+            .top-bar { padding: 12px 16px; }
+            .top-bar-left { font-size: 10px; }
+            .top-bar-right { gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+            .top-bar-right a { font-size: 9px; letter-spacing: 0.3px; }
             .lang-toggle { display: none; }
+            .page-section { padding: 48px 20px; }
+            .page-section h2 { font-size: clamp(24px, 6vw, 30px); margin-bottom: 16px; }
+            .page-section p { font-size: 13px; max-width: 100%; }
+            .empty-state { padding: 60px 20px; }
+            .empty-state h3 { font-size: 22px; }
+            .site-footer { padding: 20px; flex-direction: column; gap: 6px; text-align: center; }
         }
     </style>
 </head>

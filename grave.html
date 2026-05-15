@@ -281,13 +281,50 @@
             text-transform: uppercase; color: var(--text-tertiary);
         }
 
-        @media (max-width: 900px) {
+        /* ===== iMac / Large Desktop (1440px+) ===== */
+        @media (min-width: 1440px) {
+            .graveyard { padding: 80px 60px min(30vh, 280px); }
+            #tombstoneContainer { margin-top: clamp(100px, 14vh, 200px); }
+            .tombstone-solo { width: 480px; padding: 72px 56px 64px; }
+            .tombstone-solo h1 { font-size: 26px; }
+            .tombstone-solo .ts-date { font-size: 13px; }
+            .tombstone-solo .ts-desc { font-size: 15px; max-width: 420px; }
+            .grass { width: 50vw; }
+            .rain { transform: skewX(-6deg); }
+        }
+
+        /* ===== iPad (768px - 1023px) ===== */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .container { grid-template-columns: 52px 1fr; }
+            .sidebar { padding: 20px 0; }
+            .sidebar-logo { font-size: 12px; letter-spacing: 1px; }
+            .sidebar-icon { width: 28px; height: 28px; font-size: 10px; }
+            .graveyard { padding: 60px 32px min(25vh, 200px); }
+            #tombstoneContainer { margin-top: clamp(80px, 12vh, 160px); }
+            .tombstone-solo { width: 340px; padding: 52px 40px 44px; }
+            .tombstone-solo h1 { font-size: 20px; }
+            .tombstone-solo .ts-desc { font-size: 13px; }
+            .grass { width: 60vw; }
+            .top-bar { padding: 16px 32px; }
+            .top-bar-left a { font-size: 10px; }
+        }
+
+        /* ===== Mobile (max-width: 767px) ===== */
+        @media (max-width: 767px) {
             .container { grid-template-columns: 1fr; }
             .sidebar { display: none; }
-            .graveyard { padding: 60px 24px; }
-            .top-bar { padding: 16px 20px; }
-            .tombstone-solo { width: 240px; padding: 40px 28px 36px; }
-            .grass { width: 80vw; }
+            .graveyard { padding: 40px 20px 80px; }
+            #tombstoneContainer { margin-top: 60px; }
+            .tombstone-solo { width: 260px; padding: 36px 24px 32px; }
+            .tombstone-solo h1 { font-size: 17px; }
+            .tombstone-solo .ts-date { font-size: 10px; }
+            .tombstone-solo .ts-desc { font-size: 12px; line-height: 1.7; max-width: 100%; }
+            .grass { width: 85vw; }
+            .rain { transform: skewX(-4deg); }
+            .drop { filter: blur(0.2px); }
+            .top-bar { padding: 12px 16px; }
+            .top-bar-left a { font-size: 9px; }
+            .top-bar-right .dot { width: 6px; height: 6px; }
         }
     </style>
 </head>
