@@ -26,11 +26,68 @@
             background: var(--bg); color: var(--text);
             line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
         }
-        .container { display: grid; grid-template-columns: 64px 1fr; min-height: 100vh; }
+        .container {
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            min-height: 100vh;
+            transition: grid-template-columns 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        body.drawer-open .container {
+            grid-template-columns: 364px 1fr;
+        }
+
+        .sidebar-drawer-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            z-index: 300;
+        }
+
+        .drawer {
+            width: 0;
+            height: 100%;
+            background: var(--bg);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity 0.35s ease;
+            flex-shrink: 0;
+        }
+        body.drawer-open .drawer {
+            width: 300px;
+            opacity: 1;
+            border-right: 1px solid var(--line);
+        }
+
+        .drawer-inner {
+            width: 300px;
+            padding: 36px 0;
+            flex-shrink: 0;
+        }
+
+        .drawer-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 250;
+        }
+        body.drawer-open .drawer-overlay {
+            opacity: 1; pointer-events: auto;
+        }
+
         .sidebar {
-            border-right: 1px solid var(--line); position: sticky; top: 0; height: 100vh;
+            width: 64px;
+            min-width: 64px;
+            height: 100%;
+            border-right: 1px solid var(--line);
             display: flex; flex-direction: column; align-items: center; padding: 24px 0;
-            background: var(--bg); z-index: 10;
+            background: var(--bg);
+            flex-shrink: 0;
         }
         .sidebar-logo {
             writing-mode: vertical-rl; text-orientation: mixed;
@@ -64,6 +121,78 @@
             transition: all 0.3s; font-size: 11px; color: var(--text-secondary);
         }
         .sidebar-icon:hover { border-color: var(--text); color: var(--text); }
+
+        /* Drawer Trigger */
+        .drawer-trigger {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px;
+            cursor: pointer; margin-bottom: auto;
+            padding: 20px 0;
+            transition: all 0.4s ease;
+            max-height: 200px; opacity: 1; overflow: hidden;
+        }
+        .drawer-trigger:hover { opacity: 0.5; }
+        .trigger-bars {
+            display: flex; flex-direction: column; gap: 3px;
+        }
+        .trigger-bars span {
+            display: block; width: 14px; height: 1.5px;
+            background: var(--text);
+        }
+        .trigger-label {
+            writing-mode: vertical-rl; text-orientation: mixed;
+            font-size: 9px; font-weight: 500;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        body.drawer-open .drawer-trigger {
+            max-height: 0; opacity: 0; margin: 0; padding: 0;
+            pointer-events: none;
+        }
+
+        /* Drawer Nav */
+        .drawer-nav {
+            width: 100%;
+        }
+        .drawer-nav a {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: 22px; font-weight: 500;
+            color: var(--text); text-decoration: none;
+            transition: opacity 0.3s; cursor: pointer; line-height: 1.3;
+            display: block;
+            padding: 14px 36px;
+            border-bottom: 1px solid var(--line);
+        }
+        .drawer-nav a:first-child {
+            border-top: 1px solid var(--line);
+        }
+        .drawer-nav a:hover { opacity: 0.5; }
+
+        /* Drawer Logo */
+        .drawer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px; font-weight: 600;
+            letter-spacing: 3px; text-transform: uppercase;
+            margin-bottom: 36px; color: var(--text);
+            padding: 0 36px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.4s ease 0.15s;
+        }
+        body.drawer-open .drawer-logo {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Drawer open: hide mail icon, rotate scroll-top arrow */
+        body.drawer-open .sidebar-icon.mail-icon { display: none; }
+        .sidebar-icon.scroll-top i { transition: transform 0.4s ease; }
+        body.drawer-open .sidebar-icon.scroll-top i { transform: rotate(-90deg); }
+
+        /* Hide top-bar nav links on desktop */
+        @media (min-width: 768px) {
+            .top-bar-right > a { display: none; }
+        }
 
         .main { display: flex; flex-direction: column; }
         .top-bar {
@@ -351,7 +480,7 @@
         /* ===== Mobile (max-width: 767px) ===== */
         @media (max-width: 767px) {
             .container { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
+            .sidebar-drawer-wrapper { display: none; }
             .hero { grid-template-columns: 1fr; min-height: auto; }
             .hero-left { padding: 28px 20px; border-right: none; border-bottom: 1px solid var(--line); }
             .hero-content { max-width: 100%; }
@@ -423,20 +552,36 @@
 </head>
 <body>
     <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-logo" onclick="resetFilter()">UpLabs</div>
-            <nav class="sidebar-nav" id="sidebarNav">
-                <div class="nav-item active" data-cat="all">All</div>
-                <div class="nav-item" data-cat="brand">Brand</div>
-                <div class="nav-item" data-cat="digital">Digital</div>
-                <div class="nav-item" data-cat="product">Product</div>
-                <div class="nav-item" data-cat="editorial">Editorial</div>
-            </nav>
-            <div class="sidebar-bottom">
-                <div class="sidebar-icon"><i class="fas fa-search" style="font-size:10px;"></i></div>
-                <div class="sidebar-icon" onclick="scrollToTop()"><i class="fas fa-arrow-up" style="font-size:10px;"></i></div>
+        <div class="sidebar-drawer-wrapper">
+            <div class="drawer" id="drawer">
+                <div class="drawer-inner">
+                    <div class="drawer-logo">UpLabs</div>
+                    <nav class="drawer-nav">
+                        <a onclick="toggleDrawer();" id="drawerWork">Work</a>
+                        <a onclick="scrollToSection('consulting');toggleDrawer();" id="drawerConsulting">Consulting</a>
+                        <a onclick="scrollToSection('brandDesign');toggleDrawer();" id="drawerBrandDesign">Brand Design</a>
+                        <a onclick="scrollToSection('services');toggleDrawer();" id="drawerServices">Services</a>
+                        <a onclick="scrollToSection('aboutMe');toggleDrawer();" id="drawerAboutMe">About Me</a>
+                        <a onclick="scrollToSection('contact');toggleDrawer();" id="drawerContact">Contact</a>
+                    </nav>
+                </div>
             </div>
-        </aside>
+            <aside class="sidebar">
+                <div class="sidebar-logo" onclick="resetFilter()">UpLabs</div>
+                <div class="drawer-trigger" onclick="toggleDrawer()">
+                    <div class="trigger-bars">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="trigger-label" id="triggerLabel">Menu</div>
+                </div>
+                <div class="sidebar-bottom">
+                    <div class="sidebar-icon mail-icon" onclick="scrollToSection('contact')"><i class="fas fa-envelope" style="font-size:10px;"></i></div>
+                    <div class="sidebar-icon scroll-top" onclick="scrollToTop()"><i class="fas fa-arrow-up" style="font-size:10px;"></i></div>
+                </div>
+            </aside>
+        </div>
 
         <div class="main">
             <div class="top-bar">
@@ -557,6 +702,8 @@
         </div>
     </div>
 
+    <div class="drawer-overlay" onclick="toggleDrawer()"></div>
+
 <script>
 /* ========================  I18N  ======================== */
 const i18n = {
@@ -570,6 +717,7 @@ const i18n = {
         thNo: '序号', thName: '名称', thCat: '分类', thRating: '状态', thUsers: '年份',
         emptyTitle: '未找到产品', emptyDesc: '尝试其他分类',
         footerLeft: 'UpLabs — 2026', footerRight: '创意制作',
+        triggerLabel: '菜单',
         floatNames: ['月影咖啡馆','东方瓷韵','城市漫游者'],
         floatDev1: '月影咖啡', floatDev2: '东方瓷艺', floatDev3: '城市实验室',
         cats: { all: '全部', brand: '品牌', digital: '数字', product: '产品', editorial: '编辑' },
@@ -597,6 +745,7 @@ const i18n = {
         thNo: 'No.', thName: 'Name', thCat: 'Category', thRating: 'Status', thUsers: 'Year',
         emptyTitle: 'No products found', emptyDesc: 'Try a different category',
         footerLeft: 'UpLabs — 2026', footerRight: 'Creative Production',
+        triggerLabel: 'Menu',
         floatNames: ['Moonlit Café','Oriental Porcelain','Urban Wanderer'],
         floatDev1: 'Moonlit Coffee', floatDev2: 'Oriental Ceramics', floatDev3: 'Urban Lab',
         cats: { all: 'All', brand: 'Brand', digital: 'Digital', product: 'Product', editorial: 'Editorial' },
@@ -655,6 +804,18 @@ function applyI18n() {
 
     document.querySelectorAll('.nav-item').forEach(item => {
         item.textContent = t('cats.' + item.dataset.cat);
+    });
+
+    const drawerIds = ['triggerLabel'];
+    drawerIds.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = t(id); });
+
+    const drawerNavMap = [
+        ['drawerWork','navWork'], ['drawerConsulting','navConsulting'],
+        ['drawerBrandDesign','navBrandDesign'], ['drawerServices','navServices'],
+        ['drawerAboutMe','navAboutMe'], ['drawerContact','navContact']
+    ];
+    drawerNavMap.forEach(([id, key]) => {
+        const el = document.getElementById(id); if (el) el.textContent = t(key);
     });
 }
 
@@ -831,13 +992,25 @@ function closeMobileNav() {
     }
 }
 
+function toggleDrawer() {
+    document.body.classList.toggle('drawer-open');
+}
+
+function closeDrawer() {
+    document.body.classList.remove('drawer-open');
+}
+
 function scrollToList() {
     document.getElementById('pluginList').scrollIntoView({ behavior: 'smooth' });
     closeMobileNav();
 }
 
 function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (document.body.classList.contains('drawer-open')) {
+        toggleDrawer();
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 }
 
 function scrollToSection(id) {
