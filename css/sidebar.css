@@ -1,0 +1,53 @@
+.sidebar {
+            width: 64px;
+            min-width: 64px;
+            height: 100%;
+            border-right: 1px solid var(--line);
+            display: flex; flex-direction: column; align-items: center; padding: 24px 0;
+            background: var(--bg);
+            flex-shrink: 0;
+        }
+
+.sidebar-logo {
+            writing-mode: vertical-rl; text-orientation: mixed;
+            font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 500;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: auto;
+            cursor: pointer; transition: opacity 0.3s;
+        }
+
+.sidebar-logo:hover { opacity: 0.5; }
+
+.sidebar-nav {
+            display: flex; flex-direction: column; gap: 32px; margin-bottom: auto;
+        }
+
+.nav-item {
+            writing-mode: vertical-rl; text-orientation: mixed; font-size: 10px;
+            font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--text-secondary); cursor: pointer; transition: color 0.3s;
+            position: relative; padding: 4px 0;
+        }
+
+.nav-item::after {
+            content: ''; position: absolute; left: 50%; top: 100%;
+            width: 1px; height: 16px; background: var(--line);
+            transform: translateX(-50%); opacity: 0; transition: opacity 0.3s;
+        }
+
+.nav-item:hover, .nav-item.active { color: var(--text); }
+
+.nav-item.active::after { opacity: 1; }
+
+.sidebar-bottom {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+
+.sidebar-icon {
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--line); border-radius: 50%; cursor: pointer;
+            transition: all 0.3s; font-size: 11px; color: var(--text-secondary);
+        }
+
+.sidebar-icon:hover { border-color: var(--text); color: var(--text); }
+
+.sidebar-icon.scroll-top i { transition: transform 0.4s ease; }

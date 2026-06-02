@@ -1,0 +1,141 @@
+:root {
+            --bg: #f0eeeb;
+            --bg-warm: #eae7e2;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --text-tertiary: #999999;
+            --line: #d4d0ca;
+            --shadow-soft: 0 8px 40px rgba(0,0,0,0.08);
+        }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; overscroll-behavior: none; }
+        body { overscroll-behavior: none; }
+
+body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+        }
+
+body.drawer-open .container {
+            grid-template-columns: 364px 1fr;
+        }
+
+body.drawer-open .drawer {
+            width: 300px;
+            opacity: 1;
+            border-right: 1px solid var(--line);
+        }
+
+body.drawer-open .drawer-overlay {
+            opacity: 1; pointer-events: auto;
+        }
+
+/* Drawer Trigger */
+        .drawer-trigger {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px;
+            cursor: pointer; margin-bottom: auto;
+            padding: 20px 0;
+            transition: all 0.4s ease;
+            max-height: 200px; opacity: 1; overflow: hidden;
+        }
+
+body.drawer-open .drawer-trigger {
+            max-height: 0; opacity: 0; margin: 0; padding: 0;
+            pointer-events: none;
+        }
+
+/* Drawer Nav */
+        .drawer-nav {
+            width: 100%;
+        }
+
+/* Drawer Logo */
+        .drawer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px; font-weight: 600;
+            letter-spacing: 3px; text-transform: uppercase;
+            margin-bottom: 40px; color: var(--text);
+            padding: 0 36px 0 50px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.4s ease 0.15s;
+        }
+
+body.drawer-open .drawer-logo {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+/* Drawer open: hide mail icon, rotate scroll-top arrow */
+        body.drawer-open .sidebar-icon.mail-icon { display: none; }
+
+body.drawer-open .sidebar-icon.scroll-top i { transform: rotate(-90deg); }
+
+
+/* ===== Expand Panel ===== */
+        .expand-panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            background: var(--surface);
+        }
+        .expand-panel.open {
+            grid-template-rows: 1fr;
+        }
+        .expand-panel > .expand-wrapper {
+            overflow: hidden;
+        }
+        .expand-layout {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 64px;
+            align-items: stretch;
+        }
+        .expand-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 2px 0;
+        }
+        .expand-left-top {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .expand-icon {
+            width: 48px; height: 48px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .expand-title {
+            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-size: 24px; font-weight: 600; line-height: 1.15;
+        }
+        .expand-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2px 0;
+        }
+        .expand-desc {
+            font-size: 14px; color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 28px; font-size: 11px; font-weight: 600;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            font-family: inherit; cursor: pointer;
+            transition: all 0.3s; border: none; text-decoration: none;
+        }
+        .btn-primary { background: var(--text); color: var(--bg); }
+        .btn-primary:hover { background: var(--text-secondary); }
+        .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+        .btn-ghost:hover { border-color: var(--text); }
