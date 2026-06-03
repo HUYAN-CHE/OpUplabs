@@ -7,7 +7,7 @@
         @media (min-width: 1440px) {
             .page-section { padding: 120px 60px; }
             .page-section-inner { max-width: 900px; }
-            .hero-left { padding: 64px 60px; }
+            .hero-left { padding: 96px 60px 48px; }
             .hero-right { padding: 48px; }
             .plugin-showcase { width: 380px; height: 480px; }
             .plugin-card-float { width: 240px; padding: 24px; }
@@ -30,7 +30,7 @@
             .sidebar-nav { gap: 24px; }
             .nav-item { font-size: 9px; letter-spacing: 1px; }
             .sidebar-icon { width: 28px; height: 28px; font-size: 10px; }
-            .hero-left { padding: 36px 32px; }
+            .hero-left { padding: 96px 32px 36px; }
             .hero-title { font-size: clamp(28px, 3.5vw, 42px); }
             .hero-desc { max-width: 320px; }
             .hero-meta { gap: 32px; }
