@@ -1,15 +1,16 @@
 .trigger-bars {
-            display: flex; flex-direction: column; align-items: center; gap: 3px;
-        }
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transform: translateX(0.5px);
+}
 
 .trigger-bars span {
-            display: block; width: 14px; height: 1.5px;
-            background: var(--text);
-        }
+    display: block; width: 14px; height: 1.5px;
+    background: var(--text);
+}
 
 .trigger-label {
-            writing-mode: vertical-rl; text-orientation: mixed;
-            font-size: 12px; font-weight: 500;
-            letter-spacing: 2px; text-transform: uppercase;
-            color: var(--text-secondary);
-        }
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-secondary);
+}
