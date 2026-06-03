@@ -20,6 +20,10 @@
             border-bottom: none;
         }
 
+.list-item.last-item {
+            border-bottom: none;
+        }
+
 .list-item .li-num {
             font-family: 'Cormorant Garamond', serif; font-size: 20px;
             font-weight: 500; color: var(--text-tertiary);

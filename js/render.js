@@ -65,8 +65,10 @@ function renderList() {
     empty.style.display = 'none';
     openId = null;
 
-    container.innerHTML = list.map((p, i) => `
-        <div class="list-item" onclick="toggleExpand(${p.id})" data-id="${p.id}">
+    container.innerHTML = list.map((p, i) => {
+        const isLast = i === list.length - 1;
+        return `
+        <div class="list-item${isLast ? ' last-item' : ''}" onclick="toggleExpand(${p.id})" data-id="${p.id}">
             <div class="li-num">${String(i+1).padStart(2,'0')}</div>
             <div class="li-name">${p.displayName}</div>
             <div class="li-cat">${p.catLabel}</div>
@@ -79,8 +81,8 @@ function renderList() {
                     ${buildExpandHtml(p)}
                 </div>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 function toggleExpand(id) {
