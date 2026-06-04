@@ -1,5 +1,6 @@
 /* ========================  I18N  ======================== */
 const i18n = {
+    pageTitle: { zh: '向上求索', en: 'UpLabs' },
     topBarLeft: { zh: '向上求索-产品坟场', en: 'Uplabs Product Boneyard' },
     navWork: { zh: '产品', en: 'Product' },
     navConsulting: { zh: '咨询', en: 'Consulting' },
@@ -125,6 +126,8 @@ function t(key) {
 }
 
 function applyI18n() {
+    document.title = t('pageTitle');
+
     const ids = [
         'topBarLeft','navWork','navConsulting','navBrandDesign','navServices','navAboutMe','navContact',
         'secConsultingTitle','secConsultingDesc','secBrandDesignTitle','secBrandDesignDesc',
