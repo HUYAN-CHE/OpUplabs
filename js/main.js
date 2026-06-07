@@ -21,7 +21,6 @@ document.getElementById('drawerContact')?.addEventListener('click', () => { scro
 
 // Sidebar elements
 document.querySelector('.sidebar-logo')?.addEventListener('click', resetFilter);
-document.querySelector('.drawer-trigger')?.addEventListener('click', toggleDrawer);
 document.querySelector('.sidebar-icon.mail-icon')?.addEventListener('click', () => scrollToSection('contact'));
 document.querySelector('.sidebar-icon.scroll-top')?.addEventListener('click', scrollToTop);
 

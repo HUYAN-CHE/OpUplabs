@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UpLabs</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/drawer.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/trigger.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/contact.css">
+</head>
+<body>
+    <div class="container">
+        <div id="sidebarContainer"></div>
+
+        <div class="main">
+            <div class="top-bar">
+                <div class="top-bar-left" id="topBarLeft">UpLabs · Contact</div>
+                <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="top-bar-right" id="topBarRight">
+                    <a href="index.html" id="navWork">Work</a>
+                    <a href="index.html#consulting" id="navConsulting">Consulting</a>
+                    <a href="index.html#brandDesign" id="navBrandDesign">Brand Design</a>
+                    <a href="index.html#services" id="navServices">Services</a>
+                    <a href="index.html#aboutMe" id="navAboutMe">About Me</a>
+                    <a href="contact.html" id="navContact">Contact</a>
+                    <div class="lang-toggle">
+                        <span class="lang-option active" data-lang="zh">中</span>
+                        <span class="lang-option" data-lang="en">En</span>
+                    </div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <div class="contact-page" id="contactPage">
+                <div class="noise-bg"></div>
+                <div class="cursor-glow"></div>
+                <img src="svg/Typewriter.svg" class="typewriter-img" alt="">
+
+                <div class="contact-inner">
+                    <div class="contact-label" id="contactLabel">Get in Touch</div>
+                    <h1 class="contact-title" id="contactTitle"><span class="typewriter-text"></span><span class="typewriter-cursor">|</span></h1>
+                    <p class="contact-desc" id="contactDesc">For collaborations, inquiries, or just to say hello.</p>
+
+                    <a href="#" class="contact-cta" id="contactCta">
+                        <span id="contactCtaText">Say Hello</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="contact-pills">
+                    <a href="https://x.com/OpUpLabs" target="_blank" class="contact-pill">
+                        <i class="fab fa-x-twitter"></i>
+                        <span>X</span>
+                    </a>
+                    <span class="contact-pill contact-pill-wechat">
+                        <i class="fab fa-weixin"></i>
+                        <span>UpLabs 向上求索</span>
+                        <span class="pill-divider">|</span>
+                        <i class="fas fa-magnifying-glass"></i>
+                    </span>
+                    <a href="https://t.me/JemYano_o" target="_blank" class="contact-pill">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </a>
+                </div>
+            </div>
+
+            <footer class="site-footer">
+                <span id="footerLeft">UpLabs — 2026</span>
+                <span id="footerRight">Creative Production</span>
+            </footer>
+        </div>
+    </div>
+
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <script src="js/i18n.js"></script>
+    <script src="js/drawer.js"></script>
+    <script>
+        const contactI18n = {
+            zh: {
+                topBarLeft: 'UpLabs · 联系',
+                contactLabel: '取得联系',
+                contactTitle: '让我们一起做点什么。',
+                contactDesc: '无论是合作、咨询，还是只是想打个招呼。',
+                contactCtaText: '打个招呼',
+                contactWechatName: '搜索框: UpLabs 向上求索',
+                wechatTooltip: '搜索：向上求索 UpLabs',
+                footerRight: '持续实验'
+            },
+            en: {
+                topBarLeft: 'UpLabs · Contact',
+                contactLabel: 'Get in Touch',
+                contactTitle: "Let's start something together.",
+                contactDesc: 'For collaborations, inquiries, or just to say hello.',
+                contactCtaText: 'Say Hello',
+                contactWechatName: '搜索框: UpLabs 向上求索',
+                wechatTooltip: 'Search: 向上求索 UpLabs',
+                footerRight: 'Continuous Experiment'
+            }
+        };
+
+        function typeWriter(el, text, speed = 70) {
+            const textSpan = el.querySelector('.typewriter-text');
+            const cursor = el.querySelector('.typewriter-cursor');
+            if (!textSpan) return;
+            textSpan.textContent = '';
+            if (cursor) cursor.style.display = 'inline';
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    textSpan.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (cursor) {
+                    setTimeout(() => { cursor.style.display = 'none'; }, 1800);
+                }
+            }
+            type();
+        }
+
+        function applyContactI18n() {
+            const ids = ['contactLabel','contactDesc','contactCtaText','contactWechatName','wechatTooltip','footerRight'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = contactI18n[lang][id];
+            });
+            const titleEl = document.getElementById('contactTitle');
+            if (titleEl) typeWriter(titleEl, contactI18n[lang].contactTitle);
+        }
+
+        setLang = function(l) {
+            lang = l;
+            localStorage.setItem('uplabs_lang', l);
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === l);
+            });
+            applyI18n();
+            const topBarLeft = document.getElementById('topBarLeft');
+            if (topBarLeft) topBarLeft.textContent = contactI18n[lang].topBarLeft;
+            applyContactI18n();
+        };
+
+        document.getElementById('scrollTop')?.addEventListener('click', scrollToTop);
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', () => setLang(btn.dataset.lang));
+        });
+
+        document.getElementById('contactCta')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'mailto:hujian1653266185@gmail.com';
+        });
+
+        setLang(lang);
+
+        // Cursor glow
+        const contactPage = document.getElementById('contactPage');
+        const cursorGlow = document.querySelector('.cursor-glow');
+        if (contactPage && cursorGlow) {
+            contactPage.addEventListener('mousemove', (e) => {
+                const rect = contactPage.getBoundingClientRect();
+                cursorGlow.style.left = (e.clientX - rect.left) + 'px';
+                cursorGlow.style.top = (e.clientY - rect.top) + 'px';
+            });
+        }
+    </script>
+</body>
+</html>

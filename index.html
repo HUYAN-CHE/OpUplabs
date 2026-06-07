@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
-<link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/drawer.css">
     <link rel="stylesheet" href="css/sidebar.css">
@@ -22,36 +22,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="sidebar-drawer-wrapper">
-            <div class="drawer" id="drawer">
-                <div class="drawer-inner">
-                    <div class="drawer-logo">UpLabs</div>
-                    <nav class="drawer-nav">
-                        <a id="drawerWork"><span class="drawer-link-num">01</span><span class="drawer-link-text">Work</span></a>
-                        <a id="drawerConsulting"><span class="drawer-link-num">02</span><span class="drawer-link-text">Consulting</span></a>
-                        <a id="drawerBrandDesign"><span class="drawer-link-num">03</span><span class="drawer-link-text">Brand Design</span></a>
-                        <a id="drawerServices"><span class="drawer-link-num">04</span><span class="drawer-link-text">Services</span></a>
-                        <a id="drawerAboutMe"><span class="drawer-link-num">05</span><span class="drawer-link-text">About Me</span></a>
-                        <a id="drawerContact"><span class="drawer-link-num">06</span><span class="drawer-link-text">Contact</span></a>
-                    </nav>
-                </div>
-            </div>
-            <aside class="sidebar">
-                <div class="sidebar-logo">UpLabs</div>
-                <div class="drawer-trigger">
-                    <div class="trigger-bars">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div class="trigger-label" id="triggerLabel">Menu</div>
-                </div>
-                <div class="sidebar-bottom">
-                    <div class="sidebar-icon mail-icon"><i class="fas fa-envelope" style="font-size:10px;"></i></div>
-                    <div class="sidebar-icon scroll-top"><i class="fas fa-arrow-up" style="font-size:10px;"></i></div>
-                </div>
-            </aside>
-        </div>
+        <div id="sidebarContainer"></div>
 
         <div class="main">
             <div class="top-bar">

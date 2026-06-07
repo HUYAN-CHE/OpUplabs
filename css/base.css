@@ -7,6 +7,8 @@
             --text-tertiary: #999999;
             --line: #d4d0ca;
             --shadow-soft: 0 8px 40px rgba(0,0,0,0.08);
+            --font-body: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Cormorant Garamond', 'Noto Sans SC', serif;
         }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -15,7 +17,7 @@ html { scroll-behavior: smooth; overscroll-behavior: none; }
         body { overscroll-behavior: none; }
 
 body {
-            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: var(--font-body);
             background: var(--bg); color: var(--text);
             line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
         }
@@ -56,7 +58,7 @@ body.drawer-open .drawer-trigger {
 
 /* Drawer Logo */
         .drawer-logo {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: var(--font-display);
             font-size: 24px; font-weight: 600;
             letter-spacing: 3px; text-transform: uppercase;
             margin-bottom: 40px; color: var(--text);
@@ -115,7 +117,7 @@ body.drawer-open .sidebar-icon.scroll-top i { transform: rotate(-90deg); }
             font-size: 20px; flex-shrink: 0;
         }
         .expand-title {
-            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-family: var(--font-display);
             font-size: 24px; font-weight: 600; line-height: 1.15;
         }
         .expand-right {

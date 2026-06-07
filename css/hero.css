@@ -16,7 +16,7 @@
         }
 
 .hero-title {
-            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-family: var(--font-display);
             font-size: clamp(32px, 4.5vw, 58px); font-weight: 600;
             line-height: 1.08; margin-bottom: 24px; letter-spacing: -0.02em;
         }
@@ -34,7 +34,7 @@
 .hero-meta-item { display: flex; flex-direction: column; gap: 6px; }
 
 .hero-meta-num {
-            font-family: 'Cormorant Garamond', serif; font-size: 28px;
+            font-family: var(--font-display); font-size: 28px;
             font-weight: 600; color: var(--text); line-height: 1;
         }
 

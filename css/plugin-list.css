@@ -25,12 +25,12 @@
         }
 
 .list-item .li-num {
-            font-family: 'Cormorant Garamond', serif; font-size: 20px;
+            font-family: var(--font-display); font-size: 20px;
             font-weight: 500; color: var(--text-tertiary);
         }
 
 .list-item .li-name {
-            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-family: var(--font-display);
             font-size: 24px; font-weight: 600; line-height: 1.2;
             transition: transform 0.3s;
         }
@@ -82,7 +82,7 @@
         }
 
 .expand-title {
-            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-family: var(--font-display);
             font-size: 24px; font-weight: 600; line-height: 1.15;
         }
 

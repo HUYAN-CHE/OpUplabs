@@ -6,7 +6,7 @@
 .page-section-inner { max-width: 720px; }
 
 .page-section h2 {
-            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-family: var(--font-display);
             font-size: clamp(28px, 3.5vw, 42px); font-weight: 600;
             line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em;
         }
@@ -19,7 +19,7 @@
 .empty-state { text-align: center; padding: 120px 40px; color: var(--text-tertiary); }
 
 .empty-state h3 {
-            font-family: 'Cormorant Garamond', 'Noto Sans SC', serif;
+            font-family: var(--font-display);
             font-size: 28px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;
         }
 
