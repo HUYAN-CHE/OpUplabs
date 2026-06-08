@@ -11,3 +11,6 @@
 index.html.backup.*
 drawer_open.html
 split_files.py
+
+# Local memory / logs
+.kimi/
